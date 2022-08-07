@@ -23,6 +23,7 @@ Tools:
 Helpers:
 
 - mk-nixgl-command : run a program with nixGL
+- mk-static-haskell : build a static binary with musl
 
 ## Usage
 

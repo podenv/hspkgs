@@ -74,6 +74,9 @@
           fourmolu = mk-exe hspkgs.fourmolu;
           calligraphy = mk-exe hspkgs.calligraphy;
 
+          hspkgsMusl = prev.pkgsMusl.haskell.packages.${compiler}.override
+            haskellOverrides;
+
           roboto_font =
             "${prev.roboto}/share/fonts/truetype/Roboto-Regular.ttf";
           nixGLIntel = nixGL.packages.x86_64-linux.nixGLIntel;
@@ -92,8 +95,10 @@
         p.servant-websockets
         p.effectful
       ]);
+      ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       all-pkgs = [
         ghc
+        ghc-static
         pkgs.nixGLIntel
         pkgs.weeder
         pkgs.ormolu
@@ -110,6 +115,30 @@
           export ROBOTO_TTF="${pkgs.roboto_font}"
           exec ${pkgs.nixGLIntel}/bin/nixGLIntel ${drv}/bin/${command}
         '';
+      # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
+      mk-static-haskell = drv:
+        pkgs.haskell.lib.appendConfigureFlags
+        (pkgs.haskell.lib.disableLibraryProfiling
+          (pkgs.haskell.lib.disableSharedExecutables
+            (pkgs.haskell.lib.justStaticExecutables
+              (pkgs.haskell.lib.dontCheck drv)))) [
+                "--enable-executable-static"
+                "--extra-lib-dirs=${
+                  pkgs.pkgsMusl.ncurses.override { enableStatic = true; }
+                }/lib"
+                "--extra-lib-dirs=${
+                  pkgs.pkgsMusl.gmp6.override { withStatic = true; }
+                }/lib"
+                "--extra-lib-dirs=${pkgs.pkgsMusl.zlib.static}/lib"
+                "--extra-lib-dirs=${
+                  pkgs.pkgsMusl.libsodium.overrideAttrs
+                  (old: { dontDisableStatic = true; })
+                }/lib"
+                "--extra-lib-dirs=${
+                  pkgs.pkgsMusl.libffi.overrideAttrs
+                  (old: { dontDisableStatic = true; })
+                }/lib"
+              ];
 
       overlays.hspkgs = overlay;
       packages."x86_64-linux".devShell."x86_64-linux" =
