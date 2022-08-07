@@ -96,35 +96,6 @@
         p.effectful
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
-      all-pkgs = [
-        ghc
-        ghc-static
-        pkgs.nixGLIntel
-        pkgs.weeder
-        pkgs.ormolu
-        pkgs.fourmolu
-        pkgs.hspkgs.hoogle
-        # pkgs.calligraphy
-        pkgs.haskell-language-server
-      ];
-
-    in {
-      pkgs = pkgs;
-      hoogle-shell = hp: pkg:
-        hp.shellFor {
-          packages = p: [ pkg ];
-          buildInputs = [
-            (pkgs.writeScriptBin "run"
-              "exec hoogle server -p 8080 --local --haskell;")
-          ];
-          withHoogle = true;
-        };
-      mk-nixgl-command = drv: command:
-        pkgs.writeScriptBin "run-nixgl-command" ''
-          #!/bin/sh
-          export ROBOTO_TTF="${pkgs.roboto_font}"
-          exec ${pkgs.nixGLIntel}/bin/nixGLIntel ${drv}/bin/${command}
-        '';
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
       mk-static-haskell = drv:
         pkgs.haskell.lib.appendConfigureFlags
@@ -149,10 +120,45 @@
                   (old: { dontDisableStatic = true; })
                 }/lib"
               ];
+      all-pkgs = [
+        ghc
+        ghc-static
+        pkgs.nixGLIntel
+        pkgs.weeder
+        pkgs.ormolu
+        pkgs.fourmolu
+        pkgs.hspkgs.hoogle
+        # pkgs.calligraphy
+        pkgs.haskell-language-server
+        # A sample static build env to cache its requirements
+        (mk-static-haskell pkgs.hspkgsMusl.hello).env
+      ];
 
+    in {
       overlays.hspkgs = overlay;
+      pkgs = pkgs;
+      hoogle-shell = hp: pkg:
+        hp.shellFor {
+          packages = p: [ pkg ];
+          buildInputs = [
+            (pkgs.writeScriptBin "run"
+              "exec hoogle server -p 8080 --local --haskell;")
+          ];
+          withHoogle = true;
+        };
+      mk-nixgl-command = drv: command:
+        pkgs.writeScriptBin "run-nixgl-command" ''
+          #!/bin/sh
+          export ROBOTO_TTF="${pkgs.roboto_font}"
+          exec ${pkgs.nixGLIntel}/bin/nixGLIntel ${drv}/bin/${command}
+        '';
+      mk-static-haskell = mk-static-haskell;
+
+      # Start a shell with all the tools
       packages."x86_64-linux".devShell."x86_64-linux" =
         pkgs.mkShell { buildInputs = all-pkgs; };
+
+      # Run this app to print all the path for cachix push
       apps."x86_64-linux".default = {
         type = "app";
         program = builtins.toString
