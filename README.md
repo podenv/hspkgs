@@ -60,7 +60,7 @@ Use the output `overlays.hspkgs`, for example in your flake:
 }
 ```
 
-Follow the same upstream nixpkgs:
+Follow the same upstream nixpkgs, see demo in [run-monomer](https://github.com/podenv/run-monomer):
 
 ```nix
 {
