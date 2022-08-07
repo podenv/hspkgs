@@ -103,12 +103,22 @@
         pkgs.weeder
         pkgs.ormolu
         pkgs.fourmolu
+        pkgs.hspkgs.hoogle
         # pkgs.calligraphy
         pkgs.haskell-language-server
       ];
 
     in {
       pkgs = pkgs;
+      hoogle-shell = hp: pkg:
+        hp.shellFor {
+          packages = p: [ pkg ];
+          buildInputs = [
+            (pkgs.writeScriptBin "run"
+              "exec hoogle server -p 8080 --local --haskell;")
+          ];
+          withHoogle = true;
+        };
       mk-nixgl-command = drv: command:
         pkgs.writeScriptBin "run-nixgl-command" ''
           #!/bin/sh

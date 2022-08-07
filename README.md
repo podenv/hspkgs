@@ -24,6 +24,7 @@ Helpers:
 
 - mk-nixgl-command : run a program with nixGL
 - mk-static-haskell : build a static binary with musl
+- run-hoogle : a devshell with a `run` command to start the service
 
 ## Usage
 
