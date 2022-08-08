@@ -99,6 +99,9 @@
             # bump houath2 to build with latest binary and bytestring
             hoauth2 = hpPrev.hoauth2_2_5_0;
 
+            # bump apply-refact for hlint
+            apply-refact = hpPrev.apply-refact_0_10_0_0;
+
             # bump sdl2 for latest monomer
             sdl2 = pkgs.haskell.lib.dontCheck hpPrev.sdl2_2_5_3_3;
 
@@ -144,6 +147,7 @@
           ormolu = mk-exe hspkgs.ormolu;
           fourmolu = mk-exe hspkgs.fourmolu;
           calligraphy = mk-exe hspkgs.calligraphy;
+          apply-refact = mk-exe hspkgs.apply-refact;
 
           hspkgsMusl = prev.pkgsMusl.haskell.packages.${compiler}.override
             haskellOverrides;
@@ -202,6 +206,8 @@
         pkgs.weeder
         pkgs.ormolu
         pkgs.fourmolu
+        pkgs.hlint
+        pkgs.apply-refact
         pkgs.hspkgs.hoogle
         # pkgs.calligraphy
         pkgs.haskell-language-server

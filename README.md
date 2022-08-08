@@ -19,6 +19,7 @@ Tools:
 - fourmolu-0.8.0.0
 - weeder-2.4.0
 - calligraphy-0.1.3
+- apply-refact-0.10.0.0
 
 Helpers:
 
