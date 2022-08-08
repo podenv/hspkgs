@@ -17,6 +17,23 @@
         "type": "github"
       }
     },
+    "kubernetes-client": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1657584947,
+        "narHash": "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=",
+        "owner": "TristanCacqueray",
+        "repo": "kubernetes-client-haskell",
+        "rev": "dd9ebc14958173b87b30c40d92ec38c2601250d1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "TristanCacqueray",
+        "repo": "kubernetes-client-haskell",
+        "rev": "dd9ebc14958173b87b30c40d92ec38c2601250d1",
+        "type": "github"
+      }
+    },
     "monomer": {
       "flake": false,
       "locked": {
@@ -108,6 +125,7 @@
     "root": {
       "inputs": {
         "fourmolu": "fourmolu",
+        "kubernetes-client": "kubernetes-client",
         "monomer": "monomer",
         "nixGL": "nixGL",
         "nixpkgs": "nixpkgs",

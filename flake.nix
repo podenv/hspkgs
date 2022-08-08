@@ -30,10 +30,13 @@
     # Grab latest fourmolu
     fourmolu.url = "github:fourmolu/fourmolu/v0.8.0.0";
     fourmolu.flake = false;
+    # Grab ghc922 pr
+    kubernetes-client.url = "github:TristanCacqueray/kubernetes-client-haskell/dd9ebc14958173b87b30c40d92ec38c2601250d1";
+    kubernetes-client.flake = false;
   };
 
   outputs = { self, nixpkgs, monomer, servant, relude, weeder, ormolu, fourmolu
-    , nixGL }:
+    , nixGL, kubernetes-client }:
     let
       compiler = "ghc924";
       haskellOverrides = {
@@ -43,9 +46,17 @@
               hpPrev.callCabal2nix "sevant${name}" "${servant}/servant${name}"
               { };
           in {
-            sdl2 = pkgs.haskell.lib.dontCheck hpPrev.sdl2_2_5_3_3;
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
+
+            # bump timerep to build with latest time
+            timerep = hpPrev.timerep_2_1_0_0;
+
+            # bump houath2 to build with latest binary and bytestring
+            hoauth2 = hpPrev.hoauth2_2_5_0;
+
+            # bump sdl2 for latest monomer
+            sdl2 = pkgs.haskell.lib.dontCheck hpPrev.sdl2_2_5_3_3;
 
             # don't check monomer because test needs dri
             monomer = pkgs.haskell.lib.dontCheck
@@ -54,6 +65,14 @@
             servant = mk-servant-lib "";
             servant-foreign = mk-servant-lib "-foreign";
             servant-server = mk-servant-lib "-server";
+
+            kubernetes-client-core = pkgs.haskell.lib.dontCheck
+              (hpPrev.callCabal2nix "kubernetes-client-core"
+                "${kubernetes-client}/kubernetes" { });
+
+            kubernetes-client = pkgs.haskell.lib.dontCheck
+              (hpPrev.callCabal2nix "kubernetes-client"
+                "${kubernetes-client}/kubernetes-client" { });
 
             relude = hpPrev.callCabal2nix "relude" relude { };
 
@@ -94,6 +113,7 @@
         p.monomer
         p.servant-websockets
         p.effectful
+        p.kubernetes-client
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
