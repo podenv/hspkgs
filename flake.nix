@@ -240,6 +240,9 @@
         pkgs.mkShell { buildInputs = all-pkgs; };
 
       # Run this app to print all the path for cachix push
+      devShell.x86_64-linux = pkgs.mkShell {
+        buildInputs = [ghc];
+      };
       apps."x86_64-linux".default = {
         type = "app";
         program = builtins.toString
