@@ -56,12 +56,24 @@
         rev = "dd9ebc14958173b87b30c40d92ec38c2601250d1";
         sha256 = "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=";
       };
-      # nixpkgs version is broken
+      # following nixpkgs version are broken, pull latest code
       morpheus-graphql = pkgs.fetchFromGitHub {
         owner = "morpheusgraphql";
         repo = "morpheus-graphql";
         rev = "0.20.0";
         sha256 = "sha256-c4fR2hffcfjSIVY8yT7/3HHxiB0b1tOrXXbvs8h3XNA=";
+      };
+      text-time = pkgs.fetchFromGitHub {
+        owner = "klangner";
+        repo = "text-time";
+        rev = "1ff65c2c8845e3fdd99900054f0596818a95c316";
+        sha256 = "sha256-yszIIBEr19aLJtMtuv18e/76TpGWFV30/c0XXM6uavg=";
+      };
+      json-syntax = pkgs.fetchFromGitHub {
+        owner = "byteverse";
+        repo = "json-syntax";
+        rev = "43d53312b318451b4ef5bd368bfd326a7af4970f";
+        sha256 = "sha256-SA6o2yY27GUB2ELWV/McSjX6sRYuT3o7AcnMQBJKcw8=";
       };
 
       compiler = "ghc924";
@@ -93,6 +105,11 @@
             # don't check monomer because test needs dri
             monomer = pkgs.haskell.lib.dontCheck
               ((hpPrev.callCabal2nix "monomer" monomer { }));
+
+            text-time = hpPrev.callCabal2nix "text-time" text-time { };
+            # json-syntax test needs old tasty
+            json-syntax = pkgs.haskell.lib.dontCheck
+              (hpPrev.callCabal2nix "json-syntax" json-syntax { });
 
             morpheus-graphql-tests = mk-morpheus-lib "tests";
             morpheus-graphql-core = mk-morpheus-lib "core";
@@ -150,6 +167,8 @@
         p.effectful
         p.kubernetes-client
         p.morpheus-graphql-client
+        p.text-time
+        p.json-syntax
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
