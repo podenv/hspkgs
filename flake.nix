@@ -56,6 +56,13 @@
         rev = "dd9ebc14958173b87b30c40d92ec38c2601250d1";
         sha256 = "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=";
       };
+      # nixpkgs version is broken
+      morpheus-graphql = pkgs.fetchFromGitHub {
+        owner = "morpheusgraphql";
+        repo = "morpheus-graphql";
+        rev = "0.20.0";
+        sha256 = "sha256-c4fR2hffcfjSIVY8yT7/3HHxiB0b1tOrXXbvs8h3XNA=";
+      };
 
       compiler = "ghc924";
       haskellOverrides = {
@@ -64,6 +71,9 @@
             mk-servant-lib = name:
               hpPrev.callCabal2nix "sevant${name}" "${servant}/servant${name}"
               { };
+            mk-morpheus-lib = name:
+              hpPrev.callCabal2nix "morpheus-graphql-${name}"
+              "${morpheus-graphql}/morpheus-graphql-${name}" { };
           in {
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
@@ -83,6 +93,11 @@
             # don't check monomer because test needs dri
             monomer = pkgs.haskell.lib.dontCheck
               ((hpPrev.callCabal2nix "monomer" monomer { }));
+
+            morpheus-graphql-tests = mk-morpheus-lib "tests";
+            morpheus-graphql-core = mk-morpheus-lib "core";
+            morpheus-graphql-code-gen = mk-morpheus-lib "code-gen";
+            morpheus-graphql-client = mk-morpheus-lib "client";
 
             servant = mk-servant-lib "";
             servant-foreign = mk-servant-lib "-foreign";
@@ -134,6 +149,7 @@
         p.servant-websockets
         p.effectful
         p.kubernetes-client
+        p.morpheus-graphql-client
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
