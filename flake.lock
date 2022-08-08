@@ -1,56 +1,5 @@
 {
   "nodes": {
-    "fourmolu": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1659747987,
-        "narHash": "sha256-SAVL4k+uxZKjlQq8ckXPpTADWx2G+6Hu8yNuW4jaQ8M=",
-        "owner": "fourmolu",
-        "repo": "fourmolu",
-        "rev": "21cfd18f941183a47256a4be9b8af49f5bcaf561",
-        "type": "github"
-      },
-      "original": {
-        "owner": "fourmolu",
-        "ref": "v0.8.0.0",
-        "repo": "fourmolu",
-        "type": "github"
-      }
-    },
-    "kubernetes-client": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1657584947,
-        "narHash": "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=",
-        "owner": "TristanCacqueray",
-        "repo": "kubernetes-client-haskell",
-        "rev": "dd9ebc14958173b87b30c40d92ec38c2601250d1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "TristanCacqueray",
-        "repo": "kubernetes-client-haskell",
-        "rev": "dd9ebc14958173b87b30c40d92ec38c2601250d1",
-        "type": "github"
-      }
-    },
-    "monomer": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1659572201,
-        "narHash": "sha256-NB1UxngglC77OJ0QEBwLsIQ3XKfkTVXoMMoiFdGQij8=",
-        "owner": "fjvallarino",
-        "repo": "monomer",
-        "rev": "5852155b727027e20f5bd0793b9e8df7354f9afc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "fjvallarino",
-        "repo": "monomer",
-        "rev": "5852155b727027e20f5bd0793b9e8df7354f9afc",
-        "type": "github"
-      }
-    },
     "nixGL": {
       "inputs": {
         "nixpkgs": [
@@ -88,85 +37,10 @@
         "type": "github"
       }
     },
-    "ormolu": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1659709586,
-        "narHash": "sha256-i4ePvBjHQtzGQr4LsH8n3oN+VxnKp8EhlWAz/uIB6Ik=",
-        "owner": "tweag",
-        "repo": "ormolu",
-        "rev": "f80f4ec20d6758531914497fefc03d30c55b48d0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tweag",
-        "ref": "0.5.0.1",
-        "repo": "ormolu",
-        "type": "github"
-      }
-    },
-    "relude": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1654789035,
-        "narHash": "sha256-57pQicQBHQ7T9NCuR7YnRt7E6m+tVNLE8LyJV4MtpMU=",
-        "owner": "kowainik",
-        "repo": "relude",
-        "rev": "b2fccefa4b81ead3aeec567e2f536498dec5eee5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kowainik",
-        "ref": "v1.1.0.0",
-        "repo": "relude",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
-        "fourmolu": "fourmolu",
-        "kubernetes-client": "kubernetes-client",
-        "monomer": "monomer",
         "nixGL": "nixGL",
-        "nixpkgs": "nixpkgs",
-        "ormolu": "ormolu",
-        "relude": "relude",
-        "servant": "servant",
-        "weeder": "weeder"
-      }
-    },
-    "servant": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1658081505,
-        "narHash": "sha256-+pLzHRUIFmS2uN1jr9/UxS64E7t3f0Fo3r+83X+yqlk=",
-        "owner": "haskell-servant",
-        "repo": "servant",
-        "rev": "f0e2316895ee5fda52ba9d5b2b7e10f8a80a9019",
-        "type": "github"
-      },
-      "original": {
-        "owner": "haskell-servant",
-        "repo": "servant",
-        "rev": "f0e2316895ee5fda52ba9d5b2b7e10f8a80a9019",
-        "type": "github"
-      }
-    },
-    "weeder": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1653221206,
-        "narHash": "sha256-aYcaFfu9ocwiSnFndfE9Ro70QDY560lrrT6w+uJY5eY=",
-        "owner": "ocharles",
-        "repo": "weeder",
-        "rev": "c58ed2a8c66dcf0b469f8343efb6b6f61c7c40f3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ocharles",
-        "ref": "2.4.0",
-        "repo": "weeder",
-        "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

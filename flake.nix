@@ -10,34 +10,53 @@
       "github:NixOS/nixpkgs/00d73d5385b63e868bd11282fb775f6fe4921fb5";
     nixGL.url = "github:guibou/nixGL/047a34b2f087e2e3f93d43df8e67ada40bf70e5c";
     nixGL.inputs.nixpkgs.follows = "nixpkgs";
-    # Grab latest monomer because nixpkgs is a bit outdated
-    monomer.url =
-      "github:fjvallarino/monomer/5852155b727027e20f5bd0793b9e8df7354f9afc";
-    monomer.flake = false;
-    # Need servant last version to build with ghc-9.2.3 base
-    servant.url =
-      "github:haskell-servant/servant/f0e2316895ee5fda52ba9d5b2b7e10f8a80a9019";
-    servant.flake = false;
-    # Need latest weeder for ghc-9.2 support
-    weeder.url = "github:ocharles/weeder/2.4.0";
-    weeder.flake = false;
-    # Need latest relude for ghc-9.2
-    relude.url = "github:kowainik/relude/v1.1.0.0";
-    relude.flake = false;
-    # Grab latest ormolu
-    ormolu.url = "github:tweag/ormolu/0.5.0.1";
-    ormolu.flake = false;
-    # Grab latest fourmolu
-    fourmolu.url = "github:fourmolu/fourmolu/v0.8.0.0";
-    fourmolu.flake = false;
-    # Grab ghc922 pr
-    kubernetes-client.url = "github:TristanCacqueray/kubernetes-client-haskell/dd9ebc14958173b87b30c40d92ec38c2601250d1";
-    kubernetes-client.flake = false;
   };
 
-  outputs = { self, nixpkgs, monomer, servant, relude, weeder, ormolu, fourmolu
-    , nixGL, kubernetes-client }:
+  outputs = { self, nixpkgs, nixGL }:
     let
+      # Grab latest monomer because nixpkgs is a bit outdated
+      monomer = pkgs.fetchFromGitHub {
+        owner = "fjvallarino";
+        repo = "monomer";
+        rev = "5852155b727027e20f5bd0793b9e8df7354f9afc";
+        sha256 = "sha256-NB1UxngglC77OJ0QEBwLsIQ3XKfkTVXoMMoiFdGQij8=";
+      };
+      # Need servant last version to build with ghc-9.2.3 base
+      servant = pkgs.fetchFromGitHub {
+        owner = "haskell-servant";
+        repo = "servant";
+        rev = "f0e2316895ee5fda52ba9d5b2b7e10f8a80a9019";
+        sha256 = "sha256-+pLzHRUIFmS2uN1jr9/UxS64E7t3f0Fo3r+83X+yqlk=";
+      };
+      # Need latest weeder for ghc-9.2 support
+      weeder = pkgs.fetchFromGitHub {
+        owner = "ocharles";
+        repo = "weeder";
+        rev = "2.4.0";
+        sha256 = "sha256-aYcaFfu9ocwiSnFndfE9Ro70QDY560lrrT6w+uJY5eY=";
+      };
+      # Grab latest ormolu
+      ormolu = pkgs.fetchFromGitHub {
+        owner = "tweag";
+        repo = "ormolu";
+        rev = "0.5.0.1";
+        sha256 = "sha256-i4ePvBjHQtzGQr4LsH8n3oN+VxnKp8EhlWAz/uIB6Ik=";
+      };
+      # Grab latest fourmolu
+      fourmolu = pkgs.fetchFromGitHub {
+        owner = "fourmolu";
+        repo = "fourmolu";
+        rev = "v0.8.0.0";
+        sha256 = "sha256-SAVL4k+uxZKjlQq8ckXPpTADWx2G+6Hu8yNuW4jaQ8M=";
+      };
+      # Grab ghc922 pr
+      kubernetes-client = pkgs.fetchFromGitHub {
+        owner = "TristanCacqueray";
+        repo = "kubernetes-client-haskell";
+        rev = "dd9ebc14958173b87b30c40d92ec38c2601250d1";
+        sha256 = "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=";
+      };
+
       compiler = "ghc924";
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
@@ -48,6 +67,9 @@
           in {
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
+
+            # bump relude for ghc9
+            relude = hpPrev.relude_1_1_0_0;
 
             # bump timerep to build with latest time
             timerep = hpPrev.timerep_2_1_0_0;
@@ -73,8 +95,6 @@
             kubernetes-client = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client"
                 "${kubernetes-client}/kubernetes-client" { });
-
-            relude = hpPrev.callCabal2nix "relude" relude { };
 
             ormolu = hpPrev.callCabal2nix "ormolu" ormolu { };
             fourmolu = pkgs.haskell.lib.dontCheck
