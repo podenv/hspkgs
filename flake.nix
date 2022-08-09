@@ -126,6 +126,12 @@
             servant-foreign = mk-servant-lib "-foreign";
             servant-server = mk-servant-lib "-server";
 
+            # upgrade to latest gerrit for bytestring>0.11 fix
+            gerrit = pkgs.haskell.lib.overrideCabal hpPrev.gerrit {
+              version = "0.1.5.1";
+              sha256 = "sha256-y7rSbOD8EpRiRahrG9BkL9fF0RoHLr5WzuT7mi4jQ64=";
+            };
+
             kubernetes-client-core = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client-core"
                 "${kubernetes-client}/kubernetes" { });
