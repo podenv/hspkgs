@@ -8,12 +8,18 @@
   inputs = {
     nixpkgs.url =
       "github:NixOS/nixpkgs/00d73d5385b63e868bd11282fb775f6fe4921fb5";
-    nixGL.url = "github:guibou/nixGL/047a34b2f087e2e3f93d43df8e67ada40bf70e5c";
-    nixGL.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, nixGL }:
+  outputs = { self, nixpkgs }:
     let
+      # Get nixGL to run graphic application outside of nixos
+      nixGLSrc = pkgs.fetchFromGitHub {
+        owner = "guibou";
+        repo = "nixGL";
+        rev = "047a34b2f087e2e3f93d43df8e67ada40bf70e5c";
+        sha256 = "sha256-Sz0uWspqvshGFbT+XmRVVayuW514rNNLLvrre8jBLLU=";
+      };
+
       # Grab latest monomer because nixpkgs is a bit outdated
       monomer = pkgs.fetchFromGitHub {
         owner = "fjvallarino";
@@ -156,6 +162,7 @@
         let
           mk-exe = prev.haskell.lib.justStaticExecutables;
           hspkgs = prev.haskell.packages.${compiler}.override haskellOverrides;
+          nixGL = import nixGLSrc { pkgs = prev; };
         in {
           hspkgs = hspkgs;
           weeder = mk-exe hspkgs.weeder;
@@ -169,7 +176,8 @@
 
           roboto_font =
             "${prev.roboto}/share/fonts/truetype/Roboto-Regular.ttf";
-          nixGLIntel = nixGL.packages.x86_64-linux.nixGLIntel;
+          nixGLIntel = nixGL.nixGLIntel;
+          nixGL = nixGL;
         };
 
       # Test
@@ -261,6 +269,9 @@
         program = builtins.toString
           (pkgs.writers.writeBash "app-wrapper.sh" "echo ${toString all-pkgs}");
       };
+
+      packages.x86_64-linux.default =
+        pkgs.writers.writeBash "app-wrapper.sh" "echo ${toString all-pkgs}";
 
       devShell.x86_64-linux = pkgs.mkShell { buildInputs = [ ghc ]; };
     };
