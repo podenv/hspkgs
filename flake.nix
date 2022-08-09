@@ -90,6 +90,9 @@
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
 
+            # bump tls for latest
+            tls = hpPrev.tls_1_6_0;
+
             # bump relude for ghc9
             relude = hpPrev.relude_1_1_0_0;
 
@@ -240,13 +243,12 @@
         pkgs.mkShell { buildInputs = all-pkgs; };
 
       # Run this app to print all the path for cachix push
-      devShell.x86_64-linux = pkgs.mkShell {
-        buildInputs = [ghc];
-      };
       apps."x86_64-linux".default = {
         type = "app";
         program = builtins.toString
           (pkgs.writers.writeBash "app-wrapper.sh" "echo ${toString all-pkgs}");
       };
+
+      devShell.x86_64-linux = pkgs.mkShell { buildInputs = [ ghc ]; };
     };
 }
