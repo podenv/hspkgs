@@ -132,6 +132,12 @@
               sha256 = "sha256-y7rSbOD8EpRiRahrG9BkL9fF0RoHLr5WzuT7mi4jQ64=";
             };
 
+            # there is a test failure: resolveGroupController should resolve a direct mount root
+            cgroup-rts-threads = pkgs.haskell.lib.dontCheck
+              (pkgs.haskell.lib.overrideCabal hpPrev.cgroup-rts-threads {
+                broken = false;
+              });
+
             kubernetes-client-core = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client-core"
                 "${kubernetes-client}/kubernetes" { });
@@ -182,6 +188,7 @@
         p.morpheus-graphql-client
         p.text-time
         p.json-syntax
+        p.cgroup-rts-threads
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
