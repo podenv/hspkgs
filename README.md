@@ -15,6 +15,7 @@ Libs:
 Tools:
 
 - doctest-0.20.0
+- hpack-0.35.0 (for `language: GHC2021` attribute)
 - ormolu-0.5.0.1
 - fourmolu-0.8.0.0
 - weeder-2.4.0

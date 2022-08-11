@@ -96,6 +96,9 @@
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
 
+            # Latest hpack for the 'language' option
+            hpack = hpPrev.hpack_0_35_0;
+
             # bump tls for latest
             tls = hpPrev.tls_1_6_0;
 
@@ -165,6 +168,7 @@
           nixGL = import nixGLSrc { pkgs = prev; };
         in {
           hspkgs = hspkgs;
+          hpack = mk-exe hspkgs.hpack;
           weeder = mk-exe hspkgs.weeder;
           ormolu = mk-exe hspkgs.ormolu;
           fourmolu = mk-exe hspkgs.fourmolu;
@@ -231,6 +235,7 @@
         pkgs.ormolu
         pkgs.fourmolu
         pkgs.hlint
+        pkgs.hpack
         pkgs.apply-refact
         pkgs.hspkgs.hoogle
         # pkgs.calligraphy
