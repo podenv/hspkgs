@@ -99,6 +99,9 @@
             # Latest hpack for the 'language' option
             hpack = hpPrev.hpack_0_35_0;
 
+            # Latest ki
+            ki = hpPrev.ki_1_0_0;
+
             # bump tls for latest
             tls = hpPrev.tls_1_6_0;
 
@@ -196,6 +199,7 @@
         p.monomer
         p.servant-websockets
         p.effectful
+        p.ki
         p.kubernetes-client
         p.morpheus-graphql-client
         p.text-time

@@ -11,6 +11,9 @@ Libs:
 - ghc-9.2.4
 - relude-1.1.0.0
 - monomer-1.4.1.0
+- morpheus-graphql-0.20.0
+- kubernetes-client-0.3.2.0
+- ki-1.0.0
 
 Tools:
 
