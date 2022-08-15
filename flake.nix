@@ -95,6 +95,13 @@
         sha256 = "sha256-SA6o2yY27GUB2ELWV/McSjX6sRYuT3o7AcnMQBJKcw8=";
       };
 
+      ki-effecful = pkgs.fetchFromGitHub {
+        owner = "TristanCacqueray";
+        repo = "ki-effectful";
+        rev = "9a666a8a03a70b00b3b8e22b4176b46eea841f9b";
+        sha256 = "sha256-vQRH6BlhXahexOzQeLcqeKqzA2ctolqPFykb+5kTs1s=";
+      };
+
       compiler = "ghc924";
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
@@ -145,6 +152,9 @@
             # json-syntax test needs old tasty
             json-syntax = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "json-syntax" json-syntax { });
+
+            ki-effectful = pkgs.haskell.lib.dontCheck
+              (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
 
             morpheus-graphql-tests = mk-morpheus-lib "tests";
             morpheus-graphql-core = mk-morpheus-lib "core";
@@ -232,6 +242,7 @@
         p.text-time
         p.json-syntax
         p.cgroup-rts-threads
+        p.ki-effectful
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
