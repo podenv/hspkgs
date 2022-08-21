@@ -62,6 +62,19 @@
         rev = "dd9ebc14958173b87b30c40d92ec38c2601250d1";
         sha256 = "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=";
       };
+      # Grab ghc924 pr
+      distributed-static = pkgs.fetchFromGitHub {
+        owner = "TristanCacqueray";
+        repo = "distributed-static";
+        rev = "696f6094763cd51e7c719436444b7233f0eb09f4";
+        sha256 = "sha256-4QWCCiJ67CKWrEgAY0mTlZLQVjzUuvtNg55J8ZcKSyI=";
+      };
+      network-transport = pkgs.fetchFromGitHub {
+        owner = "haskell-distributed";
+        repo = "network-transport";
+        rev = "e4fbe2385053332dc678497019799e5a87b97cd3";
+        sha256 = "sha256-/yAqZFckaeXveq8Sk6TLjfBiWcYq68GKYOckJ0ENDS4=";
+      };
       # following nixpkgs version are broken, pull latest code
       morpheus-graphql = pkgs.fetchFromGitHub {
         owner = "morpheusgraphql";
@@ -149,6 +162,15 @@
               (pkgs.haskell.lib.overrideCabal hpPrev.cgroup-rts-threads {
                 broken = false;
               });
+
+            # test failure reported: https://github.com/haskell-distributed/rank1dynamic/issues/26
+            rank1dynamic = pkgs.haskell.lib.dontCheck
+              (pkgs.haskell.lib.overrideCabal hpPrev.rank1dynamic {
+                broken = false;
+              });
+            distributed-static = hpPrev.callCabal2nix "distributed-static" distributed-static {};
+            # upgrade to latest for bytestring>0.11 fix
+            network-transport = hpPrev.callCabal2nix "network-transport" network-transport {};
 
             kubernetes-client-core = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client-core"
