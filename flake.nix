@@ -109,6 +109,10 @@
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
 
+            # Latest tasty libs
+            tasty-discover = hpPrev.tasty-discover_5_0_0;
+            tasty-hedgehog = hpPrev.tasty-hedgehog_1_2_0_0;
+
             # Latest hpack for the 'language' option
             hpack = hpPrev.hpack_0_35_0;
 
@@ -199,6 +203,7 @@
           fourmolu = mk-exe hspkgs.fourmolu;
           calligraphy = mk-exe hspkgs.calligraphy;
           apply-refact = mk-exe hspkgs.apply-refact;
+          tasty-discover = mk-exe hspkgs.tasty-discover;
 
           hspkgsMusl = prev.pkgsMusl.haskell.packages.${compiler}.override
             haskellOverrides;

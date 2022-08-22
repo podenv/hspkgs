@@ -24,6 +24,7 @@ Tools:
 - weeder-2.4.0
 - calligraphy-0.1.3
 - apply-refact-0.10.0.0
+- tasty-discover-5.0.0
 
 Helpers:
 
