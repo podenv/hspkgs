@@ -182,9 +182,11 @@
               (pkgs.haskell.lib.overrideCabal hpPrev.rank1dynamic {
                 broken = false;
               });
-            distributed-static = hpPrev.callCabal2nix "distributed-static" distributed-static {};
+            distributed-static =
+              hpPrev.callCabal2nix "distributed-static" distributed-static { };
             # upgrade to latest for bytestring>0.11 fix
-            network-transport = hpPrev.callCabal2nix "network-transport" network-transport {};
+            network-transport =
+              hpPrev.callCabal2nix "network-transport" network-transport { };
 
             kubernetes-client-core = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client-core"
@@ -237,7 +239,7 @@
         p.servant-websockets
         p.effectful
         p.ki
-        p.kubernetes-client
+        # p.kubernetes-client
         p.morpheus-graphql-client
         p.text-time
         p.json-syntax
