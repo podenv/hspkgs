@@ -95,6 +95,13 @@
         sha256 = "sha256-SA6o2yY27GUB2ELWV/McSjX6sRYuT3o7AcnMQBJKcw8=";
       };
 
+      chart-svg = pkgs.fetchFromGitHub {
+        owner = "TristanCacqueray";
+        repo = "chart-svg";
+        rev = "d195c9849d94d0935b2f1ca2f85a29f0b00f217d";
+        sha256 = "sha256-5E0zS5IyIpAsJufWfxR9AKcBYzHNbjJu3BZ1yu/g6dY=";
+      };
+
       ki-effecful = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "ki-effectful";
@@ -167,6 +174,7 @@
             xstatic-htmx = mk-xstatic-lib "-htmx";
             xstatic-tailwind = mk-xstatic-lib "-tailwind";
             xstatic-remixicon = mk-xstatic-lib "-remixicon";
+            xstatic-sakura = mk-xstatic-lib "-sakura";
             xstatic-sortable = mk-xstatic-lib "-sortable";
 
             ki-effectful = pkgs.haskell.lib.dontCheck
@@ -192,6 +200,12 @@
               (pkgs.haskell.lib.overrideCabal hpPrev.cgroup-rts-threads {
                 broken = false;
               });
+
+            # unbreak chart-svg
+            chart-svg = pkgs.haskell.lib.overrideCabal hpPrev.chart-svg {
+                broken = false;
+                src = chart-svg;
+            };
 
             # test failure reported: https://github.com/haskell-distributed/rank1dynamic/issues/26
             rank1dynamic = pkgs.haskell.lib.dontCheck
@@ -262,6 +276,7 @@
         p.cgroup-rts-threads
         p.ki-effectful
         p.xstatic-htmx
+        p.chart-svg
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
