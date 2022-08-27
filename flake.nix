@@ -102,6 +102,13 @@
         sha256 = "sha256-vQRH6BlhXahexOzQeLcqeKqzA2ctolqPFykb+5kTs1s=";
       };
 
+      xstatic = pkgs.fetchFromGitHub {
+        owner = "TristanCacqueray";
+        repo = "haskell-xstatic";
+        rev = "cbc35bdf00421eafcd508521b857463b2ab966a5";
+        sha256 = "sha256-tydUK4nKCDaDMUqsrZPCTOaC8nHL4rV2E25EcVsVDME=";
+      };
+
       compiler = "ghc924";
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
@@ -112,6 +119,9 @@
             mk-morpheus-lib = name:
               hpPrev.callCabal2nix "morpheus-graphql-${name}"
               "${morpheus-graphql}/morpheus-graphql-${name}" { };
+            mk-xstatic-lib = name:
+              hpPrev.callCabal2nix "xstatic${name}" "${xstatic}/xstatic${name}"
+              { };
           in {
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
@@ -152,6 +162,12 @@
             # json-syntax test needs old tasty
             json-syntax = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "json-syntax" json-syntax { });
+
+            xstatic = mk-xstatic-lib "";
+            xstatic-htmx = mk-xstatic-lib "-htmx";
+            xstatic-tailwind = mk-xstatic-lib "-tailwind";
+            xstatic-remixicon = mk-xstatic-lib "-remixicon";
+            xstatic-sortable = mk-xstatic-lib "-sortable";
 
             ki-effectful = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
@@ -245,6 +261,7 @@
         p.json-syntax
         p.cgroup-rts-threads
         p.ki-effectful
+        p.xstatic-htmx
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
