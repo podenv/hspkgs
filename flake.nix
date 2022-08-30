@@ -112,8 +112,8 @@
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
-        rev = "cbc35bdf00421eafcd508521b857463b2ab966a5";
-        sha256 = "sha256-tydUK4nKCDaDMUqsrZPCTOaC8nHL4rV2E25EcVsVDME=";
+        rev = "6b5a594c84d47d1a01283c20fc1bede639be6063";
+        sha256 = "sha256-uC3gdD7yW7IH16+w6iyrFTyJIY7WwjqDY3g+cEM00Jo=";
       };
 
       compiler = "ghc924";
@@ -176,6 +176,8 @@
             xstatic-remixicon = mk-xstatic-lib "-remixicon";
             xstatic-sakura = mk-xstatic-lib "-sakura";
             xstatic-sortable = mk-xstatic-lib "-sortable";
+            xstatic-sweetalert2 = mk-xstatic-lib "-sweetalert2";
+            xstatic-hyperscript = mk-xstatic-lib "-hyperscript";
 
             ki-effectful = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
@@ -276,6 +278,7 @@
         p.cgroup-rts-threads
         p.ki-effectful
         p.xstatic-htmx
+        p.xstatic-sweetalert2
         p.chart-svg
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
