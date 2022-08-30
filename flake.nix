@@ -133,6 +133,12 @@
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
 
+            # use latest PyF
+            PyF = pkgs.haskell.lib.overrideCabal hpPrev.PyF {
+              version = "0.11.0.0";
+              sha256 = "sha256-qppe8zX184Dh5TQzX26MsJefuJexIm12yDabpiJUrTA=";
+            };
+
             # Latest tasty libs
             tasty-discover = hpPrev.tasty-discover_5_0_0;
             tasty-hedgehog = hpPrev.tasty-hedgehog_1_2_0_0;
@@ -280,6 +286,7 @@
         p.xstatic-htmx
         p.xstatic-sweetalert2
         p.chart-svg
+        p.PyF
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix

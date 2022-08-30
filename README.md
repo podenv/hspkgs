@@ -14,6 +14,7 @@ Libs:
 - morpheus-graphql-0.20.0
 - kubernetes-client-0.3.2.0
 - ki-1.0.0
+- PyF-0.11.0.0
 
 Tools:
 
