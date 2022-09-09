@@ -112,8 +112,8 @@
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
-        rev = "6b5a594c84d47d1a01283c20fc1bede639be6063";
-        sha256 = "sha256-uC3gdD7yW7IH16+w6iyrFTyJIY7WwjqDY3g+cEM00Jo=";
+        rev = "7104b084c37b683ac97ea374770e41f9d52b1491";
+        sha256 = "sha256-p6A6q7PvBzLVRtvl9ly9GYg98xxRERQCYtVIKNMu8LQ=";
       };
 
       compiler = "ghc924";
@@ -127,8 +127,7 @@
               hpPrev.callCabal2nix "morpheus-graphql-${name}"
               "${morpheus-graphql}/morpheus-graphql-${name}" { };
             mk-xstatic-lib = name:
-              hpPrev.callCabal2nix "xstatic${name}" "${xstatic}/xstatic${name}"
-              { };
+              hpPrev.callCabal2nix "${name}" "${xstatic}/${name}" { };
           in {
             # Latest doctest is necessary for latest relude
             doctest = hpPrev.doctest_0_20_0;
@@ -176,14 +175,19 @@
             json-syntax = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "json-syntax" json-syntax { });
 
-            xstatic = mk-xstatic-lib "";
-            xstatic-htmx = mk-xstatic-lib "-htmx";
-            xstatic-tailwind = mk-xstatic-lib "-tailwind";
-            xstatic-remixicon = mk-xstatic-lib "-remixicon";
-            xstatic-sakura = mk-xstatic-lib "-sakura";
-            xstatic-sortable = mk-xstatic-lib "-sortable";
-            xstatic-sweetalert2 = mk-xstatic-lib "-sweetalert2";
-            xstatic-hyperscript = mk-xstatic-lib "-hyperscript";
+            xstatic = mk-xstatic-lib "xstatic";
+            xstatic-th = mk-xstatic-lib "xstatic-th";
+            lucid-xstatic = mk-xstatic-lib "lucid-xstatic";
+            servant-xstatic = mk-xstatic-lib "servant-xstatic";
+
+            xstatic-htmx = mk-xstatic-lib "xstatic-htmx";
+            xstatic-tailwind = mk-xstatic-lib "xstatic-tailwind";
+            xstatic-sakura = mk-xstatic-lib "xstatic-sakura";
+            xstatic-sweetalert2 = mk-xstatic-lib "xstatic-sweetalert2";
+            xstatic-hyperscript = mk-xstatic-lib "xstatic-hyperscript";
+            xstatic-remixicon = mk-xstatic-lib "xstatic-remixicon";
+            xstatic-sortable = mk-xstatic-lib "xstatic-sortable";
+            xstatic-xterm = mk-xstatic-lib "xstatic-xterm";
 
             ki-effectful = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
@@ -211,8 +215,8 @@
 
             # unbreak chart-svg
             chart-svg = pkgs.haskell.lib.overrideCabal hpPrev.chart-svg {
-                broken = false;
-                src = chart-svg;
+              broken = false;
+              src = chart-svg;
             };
 
             # test failure reported: https://github.com/haskell-distributed/rank1dynamic/issues/26
