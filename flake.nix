@@ -123,6 +123,9 @@
             mk-servant-lib = name:
               hpPrev.callCabal2nix "sevant${name}" "${servant}/servant${name}"
               { };
+            mk-servant-auth-lib = name:
+              hpPrev.callCabal2nix "sevant-${name}" "${servant}-auth/servant-${name}"
+              { };
             mk-morpheus-lib = name:
               hpPrev.callCabal2nix "morpheus-graphql-${name}"
               "${morpheus-graphql}/morpheus-graphql-${name}" { };
@@ -200,6 +203,8 @@
             servant = mk-servant-lib "";
             servant-foreign = mk-servant-lib "-foreign";
             servant-server = mk-servant-lib "-server";
+            servant-auth = mk-servant-auth-lib "auth";
+            servant-auth-server = mk-servant-auth-lib "auth-server";
 
             # upgrade to latest gerrit for bytestring>0.11 fix
             gerrit = pkgs.haskell.lib.overrideCabal hpPrev.gerrit {
