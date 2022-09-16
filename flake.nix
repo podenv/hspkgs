@@ -31,8 +31,8 @@
       servant = pkgs.fetchFromGitHub {
         owner = "haskell-servant";
         repo = "servant";
-        rev = "f0e2316895ee5fda52ba9d5b2b7e10f8a80a9019";
-        sha256 = "sha256-+pLzHRUIFmS2uN1jr9/UxS64E7t3f0Fo3r+83X+yqlk=";
+        rev = "2323906080e50fc2774cd1b43bc59548a90152ed";
+        sha256 = "sha256-tqFpPHbBrBwXsPXIVRFk4zRQw/jcGACiYtxiEiV3FNc=";
       };
       # Need latest weeder for ghc-9.2 support
       weeder = pkgs.fetchFromGitHub {
@@ -124,8 +124,8 @@
               hpPrev.callCabal2nix "sevant${name}" "${servant}/servant${name}"
               { };
             mk-servant-auth-lib = name:
-              hpPrev.callCabal2nix "sevant-${name}" "${servant}-auth/servant-${name}"
-              { };
+              hpPrev.callCabal2nix "sevant-auth${name}"
+              "${servant}/servant-auth/servant-auth${name}" { };
             mk-morpheus-lib = name:
               hpPrev.callCabal2nix "morpheus-graphql-${name}"
               "${morpheus-graphql}/morpheus-graphql-${name}" { };
@@ -150,6 +150,11 @@
 
             # Latest ki
             ki = hpPrev.ki_1_0_0;
+            ki-unlifted = pkgs.haskell.lib.overrideCabal hpPrev.ki-unlifted {
+              version = "1.0.0.1";
+              sha256 = "sha256-i1isnWFAKF2cN/7vztbmATz7rwCuQQ4eViGdiMUzytk=";
+              broken = false;
+            };
 
             # bump tls for latest
             tls = hpPrev.tls_1_6_0;
@@ -203,8 +208,10 @@
             servant = mk-servant-lib "";
             servant-foreign = mk-servant-lib "-foreign";
             servant-server = mk-servant-lib "-server";
-            servant-auth = mk-servant-auth-lib "auth";
-            servant-auth-server = mk-servant-auth-lib "auth-server";
+            servant-auth = mk-servant-auth-lib "";
+            # servant-auth-server test hangs
+            servant-auth-server =
+              pkgs.haskell.lib.dontCheck (mk-servant-auth-lib "-server");
 
             # upgrade to latest gerrit for bytestring>0.11 fix
             gerrit = pkgs.haskell.lib.overrideCabal hpPrev.gerrit {
@@ -292,6 +299,7 @@
         p.json-syntax
         p.cgroup-rts-threads
         p.ki-effectful
+        p.ki-unlifted
         p.xstatic-htmx
         p.xstatic-sweetalert2
         p.chart-svg
