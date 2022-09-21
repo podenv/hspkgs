@@ -116,6 +116,14 @@
         sha256 = "sha256-p6A6q7PvBzLVRtvl9ly9GYg98xxRERQCYtVIKNMu8LQ=";
       };
 
+      # patch to allow effectful 2.0
+      servant-effectful = pkgs.fetchFromGitHub {
+        owner = "TristanCacqueray";
+        repo = "servant-effectful";
+        rev = "58ed742fc047cb25fe77151cbdef8644d55dc58e";
+        sha256 = "sha256-xNAbHkHpsI1VDHXE7pZJWOhv1IQ4IdheJthqORAiN+8=";
+      };
+
       compiler = "ghc924";
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
@@ -197,8 +205,18 @@
             xstatic-sortable = mk-xstatic-lib "xstatic-sortable";
             xstatic-xterm = mk-xstatic-lib "xstatic-xterm";
 
+            # use latest effectful
+            effectful = pkgs.haskell.lib.overrideCabal hpPrev.effectful {
+              version = "2.1.0.0";
+              sha256 = "sha256-dhR9TXYdMmdgel9xxZJcuy6K5TiqyvbG3dlXTqvsc5s=";
+            };
+            effectful-core = pkgs.haskell.lib.overrideCabal hpPrev.effectful-core {
+              version = "2.1.0.0";
+              sha256 = "sha256-k5ILtbWNbJL1GCPJXkNqGjXED6Z37k+WAUJnaYxD79E=";
+            };
             ki-effectful = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
+            servant-effectful = hpPrev.callCabal2nix "servant-effectful" servant-effectful {};
 
             morpheus-graphql-tests = mk-morpheus-lib "tests";
             morpheus-graphql-core = mk-morpheus-lib "core";
@@ -300,6 +318,7 @@
         p.cgroup-rts-threads
         p.ki-effectful
         p.ki-unlifted
+        p.servant-effectful
         p.xstatic-htmx
         p.xstatic-sweetalert2
         p.chart-svg
