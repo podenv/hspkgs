@@ -7,7 +7,7 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/00d73d5385b63e868bd11282fb775f6fe4921fb5";
+      "github:NixOS/nixpkgs/da60f2dc9c95692804fa6575fa467e659de5031b";
   };
 
   outputs = { self, nixpkgs }:
@@ -27,33 +27,19 @@
         rev = "5852155b727027e20f5bd0793b9e8df7354f9afc";
         sha256 = "sha256-NB1UxngglC77OJ0QEBwLsIQ3XKfkTVXoMMoiFdGQij8=";
       };
-      # Need servant last version to build with ghc-9.2.3 base
+      # Need servant last version to build with ghc-9.2.3 base and lens-5.2
       servant = pkgs.fetchFromGitHub {
-        owner = "haskell-servant";
+        owner = "TristanCacqueray";
         repo = "servant";
-        rev = "2323906080e50fc2774cd1b43bc59548a90152ed";
-        sha256 = "sha256-tqFpPHbBrBwXsPXIVRFk4zRQw/jcGACiYtxiEiV3FNc=";
+        rev = "2609df7480d893a7e4f049c4887fe174cfb0ed6f";
+        sha256 = "sha256-D+l2ZJPYxV07VKR9K3OvFv9UXeuBkqy17w0ZzrfBgSg=";
       };
-      # Need latest weeder for ghc-9.2 support
+      # Need latest weeder for lens-5.2 support
       weeder = pkgs.fetchFromGitHub {
-        owner = "ocharles";
+        owner = "TristanCacqueray";
         repo = "weeder";
-        rev = "2.4.0";
-        sha256 = "sha256-aYcaFfu9ocwiSnFndfE9Ro70QDY560lrrT6w+uJY5eY=";
-      };
-      # Grab latest ormolu
-      ormolu = pkgs.fetchFromGitHub {
-        owner = "tweag";
-        repo = "ormolu";
-        rev = "0.5.0.1";
-        sha256 = "sha256-i4ePvBjHQtzGQr4LsH8n3oN+VxnKp8EhlWAz/uIB6Ik=";
-      };
-      # Grab latest fourmolu
-      fourmolu = pkgs.fetchFromGitHub {
-        owner = "fourmolu";
-        repo = "fourmolu";
-        rev = "v0.8.0.0";
-        sha256 = "sha256-SAVL4k+uxZKjlQq8ckXPpTADWx2G+6Hu8yNuW4jaQ8M=";
+        rev = "177e9ccc144831233df3c90894c34bf523a79fc7";
+        sha256 = "sha256-CSZXXxxJTiBWdqjJr37RmA8l/F9UuHxXJQ1sT0X4T5c=";
       };
       # Grab ghc922 pr
       kubernetes-client = pkgs.fetchFromGitHub {
@@ -150,14 +136,14 @@
             };
 
             # Latest tasty libs
+            tasty-hedgehog = hpPrev.tasty-hedgehog_1_3_0_0;
             tasty-discover = hpPrev.tasty-discover_5_0_0;
-            tasty-hedgehog = hpPrev.tasty-hedgehog_1_2_0_0;
 
             # Latest hpack for the 'language' option
             hpack = hpPrev.hpack_0_35_0;
 
             # Latest ki
-            ki = hpPrev.ki_1_0_0;
+            ki = hpPrev.ki_1_0_0_1;
             ki-unlifted = pkgs.haskell.lib.overrideCabal hpPrev.ki-unlifted {
               version = "1.0.0.1";
               sha256 = "sha256-i1isnWFAKF2cN/7vztbmATz7rwCuQQ4eViGdiMUzytk=";
@@ -178,6 +164,10 @@
 
             # bump apply-refact for hlint
             apply-refact = hpPrev.apply-refact_0_10_0_0;
+            hlint = hpPrev.hlint_3_5;
+            ghc-lib = hpPrev.ghc-lib_9_4_2_20220822;
+            ghc-lib-parser = hpPrev.ghc-lib-parser_9_4_2_20220822;
+            ghc-lib-parser-ex = hpPrev.ghc-lib-parser-ex_9_4_0_0;
 
             # bump sdl2 for latest monomer
             sdl2 = pkgs.haskell.lib.dontCheck hpPrev.sdl2_2_5_3_3;
@@ -210,13 +200,15 @@
               version = "2.1.0.0";
               sha256 = "sha256-dhR9TXYdMmdgel9xxZJcuy6K5TiqyvbG3dlXTqvsc5s=";
             };
-            effectful-core = pkgs.haskell.lib.overrideCabal hpPrev.effectful-core {
-              version = "2.1.0.0";
-              sha256 = "sha256-k5ILtbWNbJL1GCPJXkNqGjXED6Z37k+WAUJnaYxD79E=";
-            };
+            effectful-core =
+              pkgs.haskell.lib.overrideCabal hpPrev.effectful-core {
+                version = "2.1.0.0";
+                sha256 = "sha256-k5ILtbWNbJL1GCPJXkNqGjXED6Z37k+WAUJnaYxD79E=";
+              };
             ki-effectful = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
-            servant-effectful = hpPrev.callCabal2nix "servant-effectful" servant-effectful {};
+            servant-effectful =
+              hpPrev.callCabal2nix "servant-effectful" servant-effectful { };
 
             morpheus-graphql-tests = mk-morpheus-lib "tests";
             morpheus-graphql-core = mk-morpheus-lib "core";
@@ -268,23 +260,35 @@
               (hpPrev.callCabal2nix "kubernetes-client"
                 "${kubernetes-client}/kubernetes-client" { });
 
-            ormolu = hpPrev.callCabal2nix "ormolu" ormolu { };
-            fourmolu = pkgs.haskell.lib.dontCheck
-              (hpPrev.callCabal2nix "fourmolu" fourmolu { });
             weeder = hpPrev.callCabal2nix "weeder" weeder { };
           };
+      };
+      # There is a conflict between hlint ghc-lib requirements and the one for ormolu/fourmolu.
+      # Thus we create a new pkgset just for the ormolu/fourmolu commmand line.
+      haskellFormaterOverrides = {
+        overrides = hpFinal: hpPrev: {
+          ormolu = hpPrev.ormolu_0_5_0_1;
+          fourmolu = hpPrev.fourmolu_0_8_2_0;
+        };
       };
       overlay = final: prev:
         let
           mk-exe = prev.haskell.lib.justStaticExecutables;
           hspkgs = prev.haskell.packages.${compiler}.override haskellOverrides;
+          hspkgsFormater =
+            prev.haskell.packages.${compiler}.override haskellFormaterOverrides;
+          hls = prev.haskell-language-server.override {
+            supportedGhcVersions = [ "924" ];
+          };
           nixGL = import nixGLSrc { pkgs = prev; };
         in {
           hspkgs = hspkgs;
+          haskell-language-server = hls;
           hpack = mk-exe hspkgs.hpack;
+          hlint = mk-exe hspkgs.hlint;
           weeder = mk-exe hspkgs.weeder;
-          ormolu = mk-exe hspkgs.ormolu;
-          fourmolu = mk-exe hspkgs.fourmolu;
+          ormolu = mk-exe hspkgsFormater.ormolu;
+          fourmolu = mk-exe hspkgsFormater.fourmolu;
           calligraphy = mk-exe hspkgs.calligraphy;
           apply-refact = mk-exe hspkgs.apply-refact;
           tasty-discover = mk-exe hspkgs.tasty-discover;
@@ -386,10 +390,6 @@
         '';
       mk-static-haskell = mk-static-haskell;
 
-      # Start a shell with all the tools
-      packages."x86_64-linux".devShell."x86_64-linux" =
-        pkgs.mkShell { buildInputs = all-pkgs; };
-
       # Run this app to print all the path for cachix push
       apps."x86_64-linux".default = {
         type = "app";
@@ -400,6 +400,7 @@
       packages.x86_64-linux.default =
         pkgs.writers.writeBash "app-wrapper.sh" "echo ${toString all-pkgs}";
 
-      devShell.x86_64-linux = pkgs.mkShell { buildInputs = [ ghc ]; };
+      # Start a shell with all the tools
+      devShell.x86_64-linux = pkgs.mkShell { buildInputs = all-pkgs; };
     };
 }
