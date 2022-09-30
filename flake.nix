@@ -98,8 +98,8 @@
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
-        rev = "7104b084c37b683ac97ea374770e41f9d52b1491";
-        sha256 = "sha256-p6A6q7PvBzLVRtvl9ly9GYg98xxRERQCYtVIKNMu8LQ=";
+        rev = "d418e98e554d68853f1d7f3580fc20ec2505d8d0";
+        sha256 = "sha256-JXqQEu0pH+rduQiCNp0Jv1fMN+niHCPYBs6+SpIWTKg=";
       };
 
       # patch to allow effectful 2.0
@@ -194,6 +194,7 @@
             xstatic-remixicon = mk-xstatic-lib "xstatic-remixicon";
             xstatic-sortable = mk-xstatic-lib "xstatic-sortable";
             xstatic-xterm = mk-xstatic-lib "xstatic-xterm";
+            xstatic-novnc = mk-xstatic-lib "xstatic-novnc";
 
             # use latest effectful
             effectful = pkgs.haskell.lib.overrideCabal hpPrev.effectful {
