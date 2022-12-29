@@ -294,6 +294,8 @@
           calligraphy = mk-exe hspkgs.calligraphy;
           apply-refact = mk-exe hspkgs.apply-refact;
           tasty-discover = mk-exe hspkgs.tasty-discover;
+          # replace the global cabal-install by the one provided by the right compiler set
+          cabal-install = prev.haskell.packages.${compiler}.cabal-install;
 
           hspkgsMusl = prev.pkgsMusl.haskell.packages.${compiler}.override
             haskellOverrides;
