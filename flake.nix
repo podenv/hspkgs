@@ -7,7 +7,7 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/da60f2dc9c95692804fa6575fa467e659de5031b";
+      "github:NixOS/nixpkgs/3665c429d349fbda46b0651e554cca8434452748";
   };
 
   outputs = { self, nixpkgs }:
@@ -16,76 +16,45 @@
       nixGLSrc = pkgs.fetchFromGitHub {
         owner = "guibou";
         repo = "nixGL";
-        rev = "047a34b2f087e2e3f93d43df8e67ada40bf70e5c";
-        sha256 = "sha256-Sz0uWspqvshGFbT+XmRVVayuW514rNNLLvrre8jBLLU=";
+        rev = "7165ffbccbd2cf4379b6cd6d2edd1620a427e5ae";
+        sha256 = "sha256-Qc8MXcV+YCPREu8kk6oggk23ZBKLqeQRAIsLbHEviPE=";
       };
 
-      # Grab latest monomer because nixpkgs is a bit outdated
-      monomer = pkgs.fetchFromGitHub {
-        owner = "fjvallarino";
-        repo = "monomer";
-        rev = "5852155b727027e20f5bd0793b9e8df7354f9afc";
-        sha256 = "sha256-NB1UxngglC77OJ0QEBwLsIQ3XKfkTVXoMMoiFdGQij8=";
-      };
-      # Need servant last version to build with ghc-9.2.3 base and lens-5.2
+      # Need latest servant to build with ghc-9.2 base and lens-5.2
       servant = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
+        owner = "haskell-servant";
         repo = "servant";
-        rev = "2609df7480d893a7e4f049c4887fe174cfb0ed6f";
-        sha256 = "sha256-D+l2ZJPYxV07VKR9K3OvFv9UXeuBkqy17w0ZzrfBgSg=";
+        rev = "a22600979a747ee201b8a1a2a84469285631682c";
+        sha256 = "sha256-cA6v9Y/Qnc7tfGxl0oVycdYk5+eOXFVYUb44yBZQ5wg=";
       };
-      # Need latest weeder for lens-5.2 support
+
+      # Need latest weeder for lens-5.2 support ( https://github.com/ocharles/weeder/pull/106 )
       weeder = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "weeder";
         rev = "177e9ccc144831233df3c90894c34bf523a79fc7";
         sha256 = "sha256-CSZXXxxJTiBWdqjJr37RmA8l/F9UuHxXJQ1sT0X4T5c=";
       };
-      # Grab ghc922 pr
+      # Grab ghc92 pr
       kubernetes-client = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "kubernetes-client-haskell";
         rev = "dd9ebc14958173b87b30c40d92ec38c2601250d1";
         sha256 = "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=";
       };
-      # Grab ghc924 pr
+      # Need latest for ghc92
       distributed-static = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
+        owner = "haskell-distributed";
         repo = "distributed-static";
-        rev = "696f6094763cd51e7c719436444b7233f0eb09f4";
+        rev = "03604c7db49fd74a925cba19fe97d5c9f97d8eb4";
         sha256 = "sha256-4QWCCiJ67CKWrEgAY0mTlZLQVjzUuvtNg55J8ZcKSyI=";
       };
-      network-transport = pkgs.fetchFromGitHub {
-        owner = "haskell-distributed";
-        repo = "network-transport";
-        rev = "e4fbe2385053332dc678497019799e5a87b97cd3";
-        sha256 = "sha256-/yAqZFckaeXveq8Sk6TLjfBiWcYq68GKYOckJ0ENDS4=";
-      };
-      # following nixpkgs version are broken, pull latest code
-      morpheus-graphql = pkgs.fetchFromGitHub {
-        owner = "morpheusgraphql";
-        repo = "morpheus-graphql";
-        rev = "0.20.0";
-        sha256 = "sha256-c4fR2hffcfjSIVY8yT7/3HHxiB0b1tOrXXbvs8h3XNA=";
-      };
+
       text-time = pkgs.fetchFromGitHub {
         owner = "klangner";
         repo = "text-time";
         rev = "1ff65c2c8845e3fdd99900054f0596818a95c316";
         sha256 = "sha256-yszIIBEr19aLJtMtuv18e/76TpGWFV30/c0XXM6uavg=";
-      };
-      json-syntax = pkgs.fetchFromGitHub {
-        owner = "byteverse";
-        repo = "json-syntax";
-        rev = "43d53312b318451b4ef5bd368bfd326a7af4970f";
-        sha256 = "sha256-SA6o2yY27GUB2ELWV/McSjX6sRYuT3o7AcnMQBJKcw8=";
-      };
-
-      chart-svg = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
-        repo = "chart-svg";
-        rev = "d195c9849d94d0935b2f1ca2f85a29f0b00f217d";
-        sha256 = "sha256-5E0zS5IyIpAsJufWfxR9AKcBYzHNbjJu3BZ1yu/g6dY=";
       };
 
       ki-effecful = pkgs.fetchFromGitHub {
@@ -102,15 +71,14 @@
         sha256 = "sha256-tbvjszYhbkNO5TSv6DjnKpsEQxChWIDANaLrtPTgtpw=";
       };
 
-      # patch to allow effectful 2.0
       servant-effectful = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
+        owner = "Kleidukos";
         repo = "servant-effectful";
-        rev = "58ed742fc047cb25fe77151cbdef8644d55dc58e";
-        sha256 = "sha256-xNAbHkHpsI1VDHXE7pZJWOhv1IQ4IdheJthqORAiN+8=";
+        rev = "21b5a1d7cb209f3b4594167bb0b5a8d632c8a8e1";
+        sha256 = "sha256-UUNymCKASnpi6fh26Y5GQD3ufjkY7vbVqWwh76GcnU4=";
       };
 
-      compiler = "ghc924";
+      compiler = "ghc925";
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
           let
@@ -120,66 +88,31 @@
             mk-servant-auth-lib = name:
               hpPrev.callCabal2nix "sevant-auth${name}"
               "${servant}/servant-auth/servant-auth${name}" { };
-            mk-morpheus-lib = name:
-              hpPrev.callCabal2nix "morpheus-graphql-${name}"
-              "${morpheus-graphql}/morpheus-graphql-${name}" { };
             mk-xstatic-lib = name:
               hpPrev.callCabal2nix "${name}" "${xstatic}/${name}" { };
           in {
-            # Latest doctest is necessary for latest relude
-            doctest = hpPrev.doctest_0_20_0;
-
-            # use latest PyF
-            PyF = pkgs.haskell.lib.overrideCabal hpPrev.PyF {
-              version = "0.11.0.0";
-              sha256 = "sha256-qppe8zX184Dh5TQzX26MsJefuJexIm12yDabpiJUrTA=";
-            };
-
-            # Latest tasty libs
-            tasty-hedgehog = hpPrev.tasty-hedgehog_1_3_0_0;
-            tasty-discover = hpPrev.tasty-discover_5_0_0;
-
-            # Latest hpack for the 'language' option
-            hpack = hpPrev.hpack_0_35_0;
-
-            # Latest ki
-            ki = hpPrev.ki_1_0_0_1;
-            ki-unlifted = pkgs.haskell.lib.overrideCabal hpPrev.ki-unlifted {
-              version = "1.0.0.1";
-              sha256 = "sha256-i1isnWFAKF2cN/7vztbmATz7rwCuQQ4eViGdiMUzytk=";
-              broken = false;
-            };
-
             # bump tls for latest
             tls = hpPrev.tls_1_6_0;
-
-            # bump relude for ghc9
-            relude = hpPrev.relude_1_1_0_0;
 
             # bump timerep to build with latest time
             timerep = hpPrev.timerep_2_1_0_0;
 
-            # bump houath2 to build with latest binary and bytestring
-            hoauth2 = hpPrev.hoauth2_2_5_0;
-
             # bump apply-refact for hlint
-            apply-refact = hpPrev.apply-refact_0_10_0_0;
+            apply-refact = hpPrev.apply-refact_0_11_0_0;
             hlint = hpPrev.hlint_3_5;
-            ghc-lib = hpPrev.ghc-lib_9_4_2_20220822;
-            ghc-lib-parser = hpPrev.ghc-lib-parser_9_4_2_20220822;
+            ghc-lib = hpPrev.ghc-lib_9_4_4_20221225;
+            ghc-lib-parser = hpPrev.ghc-lib-parser_9_4_4_20221225;
             ghc-lib-parser-ex = hpPrev.ghc-lib-parser-ex_9_4_0_0;
-
-            # bump sdl2 for latest monomer
-            sdl2 = pkgs.haskell.lib.dontCheck hpPrev.sdl2_2_5_3_3;
-
-            # don't check monomer because test needs dri
-            monomer = pkgs.haskell.lib.dontCheck
-              ((hpPrev.callCabal2nix "monomer" monomer { }));
+            Cabal-syntax = hpPrev.Cabal-syntax_3_8_1_0;
+            fourmolu = hpPrev.fourmolu_0_10_1_0;
+            ormolu = hpPrev.ormolu_0_5_1_0;
 
             text-time = hpPrev.callCabal2nix "text-time" text-time { };
             # json-syntax test needs old tasty
             json-syntax = pkgs.haskell.lib.dontCheck
-              (hpPrev.callCabal2nix "json-syntax" json-syntax { });
+              (pkgs.haskell.lib.overrideCabal hpPrev.json-syntax {
+                broken = false;
+              });
 
             xstatic = mk-xstatic-lib "xstatic";
             xstatic-th = mk-xstatic-lib "xstatic-th";
@@ -197,51 +130,25 @@
             xstatic-novnc = mk-xstatic-lib "xstatic-novnc";
             xstatic-winbox = mk-xstatic-lib "xstatic-winbox";
 
-            # use latest effectful
-            effectful = pkgs.haskell.lib.overrideCabal hpPrev.effectful {
-              version = "2.1.0.0";
-              sha256 = "sha256-dhR9TXYdMmdgel9xxZJcuy6K5TiqyvbG3dlXTqvsc5s=";
-            };
-            effectful-core =
-              pkgs.haskell.lib.overrideCabal hpPrev.effectful-core {
-                version = "2.1.0.0";
-                sha256 = "sha256-k5ILtbWNbJL1GCPJXkNqGjXED6Z37k+WAUJnaYxD79E=";
-              };
+            # extra effectful package
             ki-effectful = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
             servant-effectful =
               hpPrev.callCabal2nix "servant-effectful" servant-effectful { };
 
-            morpheus-graphql-tests = mk-morpheus-lib "tests";
-            morpheus-graphql-core = mk-morpheus-lib "core";
-            morpheus-graphql-code-gen = mk-morpheus-lib "code-gen";
-            morpheus-graphql-client = mk-morpheus-lib "client";
-
-            servant = mk-servant-lib "";
-            servant-foreign = mk-servant-lib "-foreign";
-            servant-server = mk-servant-lib "-server";
-            servant-auth = mk-servant-auth-lib "";
-            # servant-auth-server test hangs
-            servant-auth-server =
-              pkgs.haskell.lib.dontCheck (mk-servant-auth-lib "-server");
-
-            # upgrade to latest gerrit for bytestring>0.11 fix
-            gerrit = pkgs.haskell.lib.overrideCabal hpPrev.gerrit {
-              version = "0.1.5.1";
-              sha256 = "sha256-y7rSbOD8EpRiRahrG9BkL9fF0RoHLr5WzuT7mi4jQ64=";
-            };
+            # servant = mk-servant-lib "";
+            # servant-foreign = mk-servant-lib "-foreign";
+            # servant-server = mk-servant-lib "-server";
+            # servant-auth = mk-servant-auth-lib "";
+            # # servant-auth-server test hangs
+            # servant-auth-server =
+            #   pkgs.haskell.lib.dontCheck (mk-servant-auth-lib "-server");
 
             # there is a test failure: resolveGroupController should resolve a direct mount root
             cgroup-rts-threads = pkgs.haskell.lib.dontCheck
               (pkgs.haskell.lib.overrideCabal hpPrev.cgroup-rts-threads {
                 broken = false;
               });
-
-            # unbreak chart-svg
-            chart-svg = pkgs.haskell.lib.overrideCabal hpPrev.chart-svg {
-              broken = false;
-              src = chart-svg;
-            };
 
             # test failure reported: https://github.com/haskell-distributed/rank1dynamic/issues/26
             rank1dynamic = pkgs.haskell.lib.dontCheck
@@ -250,9 +157,6 @@
               });
             distributed-static =
               hpPrev.callCabal2nix "distributed-static" distributed-static { };
-            # upgrade to latest for bytestring>0.11 fix
-            network-transport =
-              hpPrev.callCabal2nix "network-transport" network-transport { };
 
             kubernetes-client-core = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client-core"
@@ -265,32 +169,22 @@
             weeder = hpPrev.callCabal2nix "weeder" weeder { };
           };
       };
-      # There is a conflict between hlint ghc-lib requirements and the one for ormolu/fourmolu.
-      # Thus we create a new pkgset just for the ormolu/fourmolu commmand line.
-      haskellFormaterOverrides = {
-        overrides = hpFinal: hpPrev: {
-          ormolu = hpPrev.ormolu_0_5_0_1;
-          fourmolu = hpPrev.fourmolu_0_8_2_0;
-        };
-      };
+
       overlay = final: prev:
         let
           mk-exe = prev.haskell.lib.justStaticExecutables;
           hspkgs = prev.haskell.packages.${compiler}.override haskellOverrides;
-          hspkgsFormater =
-            prev.haskell.packages.${compiler}.override haskellFormaterOverrides;
           hls = prev.haskell-language-server.override {
-            supportedGhcVersions = [ "924" ];
+            supportedGhcVersions = [ "925" ];
           };
           nixGL = import nixGLSrc { pkgs = prev; };
         in {
           hspkgs = hspkgs;
           haskell-language-server = hls;
-          hpack = mk-exe hspkgs.hpack;
           hlint = mk-exe hspkgs.hlint;
           weeder = mk-exe hspkgs.weeder;
-          ormolu = mk-exe hspkgsFormater.ormolu;
-          fourmolu = mk-exe hspkgsFormater.fourmolu;
+          ormolu = mk-exe hspkgs.ormolu;
+          fourmolu = mk-exe hspkgs.fourmolu;
           calligraphy = mk-exe hspkgs.calligraphy;
           apply-refact = mk-exe hspkgs.apply-refact;
           tasty-discover = mk-exe hspkgs.tasty-discover;
@@ -311,28 +205,7 @@
         system = "x86_64-linux";
         overlays = [ overlay ];
       };
-      ghc = pkgs.hspkgs.ghcWithPackages (p: [
-        p.relude
-        p.lens
-        p.dhall
-        p.monomer
-        p.servant-websockets
-        p.effectful
-        p.ki
-        # p.kubernetes-client
-        p.morpheus-graphql-client
-        p.text-time
-        p.json-syntax
-        p.cgroup-rts-threads
-        p.ki-effectful
-        p.ki-unlifted
-        p.servant-effectful
-        p.xstatic-htmx
-        p.xstatic-sweetalert2
-        p.chart-svg
-        p.PyF
-      ]);
-      ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
+
       # Borrowed from https://github.com/dhall-lang/dhall-haskell/blob/master/nix/shared.nix
       mk-static-haskell = drv:
         pkgs.haskell.lib.appendConfigureFlags
@@ -357,9 +230,29 @@
                   (old: { dontDisableStatic = true; })
                 }/lib"
               ];
+
+      # Note: add all the above overrides here to validate build with `nix develop`
+      ghc = pkgs.hspkgs.ghcWithPackages (p: [
+        p.ki
+        # p.kubernetes-client
+        p.morpheus-graphql-client
+        p.text-time
+        p.distributed-static
+        p.json-syntax
+        p.cgroup-rts-threads
+        p.ki-effectful
+        p.servant-effectful
+        p.xstatic-htmx
+        p.xstatic-sweetalert2
+        p.chart-svg
+        p.json-syntax
+        p.gerrit
+        p.tasty-discover
+      ]);
+      ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       all-pkgs = [
         ghc
-        ghc-static
+        # ghc-static
         pkgs.nixGLIntel
         pkgs.weeder
         pkgs.ormolu
@@ -368,10 +261,8 @@
         pkgs.hpack
         pkgs.apply-refact
         pkgs.hspkgs.hoogle
-        # pkgs.calligraphy
+        pkgs.calligraphy
         pkgs.haskell-language-server
-        # A sample static build env to cache its requirements
-        (mk-static-haskell pkgs.hspkgsMusl.hello).env
       ];
 
     in {
@@ -399,6 +290,11 @@
         type = "app";
         program = builtins.toString
           (pkgs.writers.writeBash "app-wrapper.sh" "echo ${toString all-pkgs}");
+      };
+
+      apps."x86_64-linux".static = {
+        type = "app";
+        program = "${pkgs.hspkgsMusl.hello}/bin/hello";
       };
 
       packages.x86_64-linux.default =

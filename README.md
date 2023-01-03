@@ -6,26 +6,13 @@ Feel free to add your own workarounds.
 
 ## Features
 
-Libs:
+Packages:
 
-- ghc-9.2.4
-- relude-1.1.0.0
-- monomer-1.4.1.0
-- morpheus-graphql-0.20.0
-- kubernetes-client-0.3.2.0
-- ki-1.0.0
-- PyF-0.11.0.0
-
-Tools:
-
-- doctest-0.20.0
-- hpack-0.35.0 (for `language: GHC2021` attribute)
-- ormolu-0.5.0.1
-- fourmolu-0.8.0.0
+- ghc-9.2.5
 - weeder-2.4.0
 - calligraphy-0.1.3
 - apply-refact-0.10.0.0
-- tasty-discover-5.0.0
+- kubernetes-client-0.3.2.0
 
 Helpers:
 
