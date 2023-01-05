@@ -20,14 +20,6 @@
         sha256 = "sha256-Qc8MXcV+YCPREu8kk6oggk23ZBKLqeQRAIsLbHEviPE=";
       };
 
-      # Need latest servant to build with ghc-9.2 base and lens-5.2
-      servant = pkgs.fetchFromGitHub {
-        owner = "haskell-servant";
-        repo = "servant";
-        rev = "a22600979a747ee201b8a1a2a84469285631682c";
-        sha256 = "sha256-cA6v9Y/Qnc7tfGxl0oVycdYk5+eOXFVYUb44yBZQ5wg=";
-      };
-
       # Grab ghc92 pr
       kubernetes-client = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
@@ -75,12 +67,6 @@
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
           let
-            mk-servant-lib = name:
-              hpPrev.callCabal2nix "sevant${name}" "${servant}/servant${name}"
-              { };
-            mk-servant-auth-lib = name:
-              hpPrev.callCabal2nix "sevant-auth${name}"
-              "${servant}/servant-auth/servant-auth${name}" { };
             mk-xstatic-lib = name:
               hpPrev.callCabal2nix "${name}" "${xstatic}/${name}" { };
           in {
@@ -128,14 +114,6 @@
               (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
             servant-effectful =
               hpPrev.callCabal2nix "servant-effectful" servant-effectful { };
-
-            # servant = mk-servant-lib "";
-            # servant-foreign = mk-servant-lib "-foreign";
-            # servant-server = mk-servant-lib "-server";
-            # servant-auth = mk-servant-auth-lib "";
-            # # servant-auth-server test hangs
-            # servant-auth-server =
-            #   pkgs.haskell.lib.dontCheck (mk-servant-auth-lib "-server");
 
             # there is a test failure: resolveGroupController should resolve a direct mount root
             cgroup-rts-threads = pkgs.haskell.lib.dontCheck
