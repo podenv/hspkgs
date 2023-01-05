@@ -28,13 +28,6 @@
         sha256 = "sha256-cA6v9Y/Qnc7tfGxl0oVycdYk5+eOXFVYUb44yBZQ5wg=";
       };
 
-      # Need latest weeder for lens-5.2 support ( https://github.com/ocharles/weeder/pull/106 )
-      weeder = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
-        repo = "weeder";
-        rev = "177e9ccc144831233df3c90894c34bf523a79fc7";
-        sha256 = "sha256-CSZXXxxJTiBWdqjJr37RmA8l/F9UuHxXJQ1sT0X4T5c=";
-      };
       # Grab ghc92 pr
       kubernetes-client = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
@@ -166,7 +159,10 @@
               (hpPrev.callCabal2nix "kubernetes-client"
                 "${kubernetes-client}/kubernetes-client" { });
 
-            weeder = hpPrev.callCabal2nix "weeder" weeder { };
+            weeder = pkgs.haskell.lib.overrideCabal hpPrev.weeder {
+              version = "2.4.1";
+              sha256 = "sha256-KV4ROsWabRBD8CkXJzqi3BEZvIw/uNN7xu8GDTDiJ/w=";
+            };
           };
       };
 

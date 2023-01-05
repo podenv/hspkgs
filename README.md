@@ -9,7 +9,7 @@ Feel free to add your own workarounds.
 Packages:
 
 - ghc-9.2.5
-- weeder-2.4.0
+- weeder-2.4.1
 - calligraphy-0.1.3
 - apply-refact-0.10.0.0
 - kubernetes-client-0.3.2.0
