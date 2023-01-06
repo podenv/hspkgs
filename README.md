@@ -28,7 +28,7 @@ Use the output `overlays.hspkgs`, for example in your flake:
 {
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/d46be5b0e8baad998f8277e04370f0fd30dde11b";
+      "github:NixOS/nixpkgs/0dcf2ad93d93d0cba20f8517689267abc33014a6";
     hspkgs.url = "github:podenv/hspkgs";
   };
 
