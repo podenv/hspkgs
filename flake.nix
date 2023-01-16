@@ -52,8 +52,8 @@
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
-        rev = "12bff28548f838e898a46aeb5f50ad9091ff78e0";
-        sha256 = "sha256-tbvjszYhbkNO5TSv6DjnKpsEQxChWIDANaLrtPTgtpw=";
+        rev = "b955d64f66484f3b173c66208caf130738c4cc02";
+        sha256 = "sha256-z6Uw+cupR6jIDvoq9o26syv+HmKIKqpWQ3GUuJRoDV4=";
       };
 
       servant-effectful = pkgs.fetchFromGitHub {
