@@ -75,3 +75,11 @@ Speedup download by using the binary cache:
 ```ShellSession
 nix build --option binary-caches "https://cache.nixos.org https://podenv.cachix.org" --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= podenv.cachix.org-1:FA80Dv5XSHxzMYOg1wEANhDN7h43nN8twBJiYNzcDGY="
 ```
+
+## Setup nixGL for nvidia
+
+Using the same nixpkgs pin, install the `nixVulkanNvidia-$VERSION` wrapper using:
+
+```ShellSession
+NIXPKGS_ALLOW_UNFREE=1 nix build --override-input nixpkgs  github:NixOS/nixpkgs/3665c429d349fbda46b0651e554cca8434452748 --impure github:guibou/nixGL#nixVulkanNvidia
+```
