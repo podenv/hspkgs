@@ -108,6 +108,7 @@
             xstatic-xterm = mk-xstatic-lib "xstatic-xterm";
             xstatic-novnc = mk-xstatic-lib "xstatic-novnc";
             xstatic-winbox = mk-xstatic-lib "xstatic-winbox";
+            xstatic-pcm-player = mk-xstatic-lib "xstatic-pcm-player";
 
             # extra effectful package
             ki-effectful = pkgs.haskell.lib.dontCheck
