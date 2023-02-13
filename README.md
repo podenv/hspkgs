@@ -22,6 +22,12 @@ Helpers:
 
 ## Usage
 
+Starts a shell with a full development environment:
+
+```ShellSession
+$ nix develop gitub:podenv/devenv
+```
+
 Use the output `overlays.hspkgs`, for example in your flake:
 
 ```nix

@@ -223,10 +223,16 @@
         p.json-syntax
         p.gerrit
         p.tasty-discover
+        p.markdown-unlit
+        p.string-qq
+        p.yaml
+        p.gloss
+        p.ansi-terminal-game
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       all-pkgs = [
         ghc
+        # pkgs.nixGL.auto.nixGLDefault
         # ghc-static
         pkgs.nixGLIntel
         pkgs.weeder
@@ -238,6 +244,7 @@
         pkgs.hspkgs.hoogle
         pkgs.calligraphy
         pkgs.haskell-language-server
+        pkgs.ghcid
       ];
 
     in {
