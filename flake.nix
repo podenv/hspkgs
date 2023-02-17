@@ -52,8 +52,8 @@
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
-        rev = "b955d64f66484f3b173c66208caf130738c4cc02";
-        sha256 = "sha256-z6Uw+cupR6jIDvoq9o26syv+HmKIKqpWQ3GUuJRoDV4=";
+        rev = "387d11b980f1a864cd7c1a3fcfd9ad7786fca964";
+        sha256 = "sha256-AVyLUjFlEwat8tQ5s0bXx9LUSG2RTzRwmEGuZw0V+zI=";
       };
 
       servant-effectful = pkgs.fetchFromGitHub {
@@ -96,6 +96,7 @@
             xstatic = mk-xstatic-lib "xstatic";
             xstatic-th = mk-xstatic-lib "xstatic-th";
             lucid-xstatic = mk-xstatic-lib "lucid-xstatic";
+            lucid2-xstatic = mk-xstatic-lib "lucid2-xstatic";
             servant-xstatic = mk-xstatic-lib "servant-xstatic";
 
             xstatic-htmx = mk-xstatic-lib "xstatic-htmx";
