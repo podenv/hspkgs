@@ -8,7 +8,8 @@ Feel free to add your own workarounds.
 
 Packages:
 
-- ghc-9.2.5
+- ghc-9.6.1
+- cabal-3.11.0.0 (with #8726 for the --enable-multi-repl feature)
 - weeder-2.4.1
 - calligraphy-0.1.3
 - apply-refact-0.10.0.0
