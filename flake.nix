@@ -183,13 +183,6 @@
         sha256 = "sha256-QzMBtXqNsXobJBr10LVDXYehmnBrCCCUGJbnoNmj5ls=";
       };
 
-      # bump base-4.18 see: https://github.com/haskell/parallel/pull/63#issuecomment-1465242201
-      parallel = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
-        repo = "parallel";
-        rev = "ff7f8b3884442277dbbfba7f0ff5733b0e16de4c";
-        sha256 = "sha256-svZDEduDj9ebbflDKuo4jP2WYhDcOf8nKO/lPCGEdnw=";
-      };
       # https://github.com/awkward-squad/ki/pull/22
       ki = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
@@ -217,6 +210,13 @@
         repo = "optics";
         rev = "d440e8d7d10e27c5e6c822255304d5d56b6b5f89";
         sha256 = "sha256-772hP56NKigOlcigcV3TKRwGuCYgB1gN/QAfxq12h3s=";
+      };
+
+      http2 = pkgs.fetchFromGitHub {
+        owner = "kazu-yamamoto";
+        repo = "http2";
+        rev = "0fc678deb3e1ecaeda81bcf3633e43515dacdbf7";
+        sha256 = "sha256-4dTtxcsZnqDe1Tlqt4TVhqED1J8565UkCwrlBPzbCBs=";
       };
 
       cabal-src = pkgs.fetchFromGitHub {
@@ -323,6 +323,7 @@
                 "${kubernetes-client}/kubernetes-client" { });
 
             # bump for ghc96
+            http2 = hpPrev.callCabal2nix "http2" http2 { };
             indexed-traversable = hpPrev.callCabal2nix "indexed-traversable"
               "${indexed-traversable}/indexed-traversable/" { };
             # this is causing an infinite recursion
@@ -340,7 +341,28 @@
               { };
             generics-sop = hpPrev.callCabal2nix "generics-sop"
               "${generics-sop-src}/generics-sop/" { };
-            parallel = hpPrev.callCabal2nix "parallel" parallel { };
+            parallel = pkgs.haskell.lib.overrideCabal hpPrev.parallel {
+              revision = "6";
+              editedCabalFile =
+                "sha256-xlLDxuknukYfQO43T4Di4ez+gz6VBlTUMDo7FVl2JLg=";
+            };
+            vault = pkgs.haskell.lib.overrideCabal hpPrev.vault {
+              revision = "3";
+              editedCabalFile =
+                "sha256-JtgQkQaWOjRTaAEQgUU8Je4d+mr64rH1e0JrS805LZE=";
+            };
+            lifted-async = pkgs.haskell.lib.overrideCabal hpPrev.lifted-async {
+              version = "0.10.2.4";
+              sha256 = "sha256-m+1N7hX0DDWk2SotjKKeSp/nkEpbdzSG3+9YBAo+vl0=";
+            };
+            # https://github.com/nikita-volkov/mtl-prelude/pull/4
+            mtl-prelude = hpPrev.callCabal2nix "mtl-prelude"
+              (pkgs.fetchFromGitHub {
+                owner = "TristanCacqueray";
+                repo = "mtl-prelude";
+                rev = "ea0cb77dc6c14cdc816343537137f87429b319ee";
+                sha256 = "sha256-aBhQbQdG4BZ7ZFKPP9IV4MOn7e2egOBImonyr/yo+y4=";
+              }) { };
             foundation =
               hpPrev.callCabal2nix "foundation" "${foundation}/foundation/" { };
             ed25519 = pkgs.haskell.lib.dontCheck
@@ -357,6 +379,8 @@
 
             foldable1-classes-compat =
               pkgs.haskell.lib.dontCheck hpPrev.foldable1-classes-compat;
+
+            assoc = pkgs.haskell.lib.dontCheck hpPrev.assoc;
 
             boring = pkgs.haskell.lib.overrideCabal hpPrev.boring {
               version = "0.2.1";
@@ -445,6 +469,13 @@
             };
             # https://github.com/dreixel/syb/issues/40
             syb = pkgs.haskell.lib.dontCheck hpPrev.syb;
+
+            rebase = hpPrev.callCabal2nix "rebase" (pkgs.fetchFromGitHub {
+              owner = "nikita-volkov";
+              repo = "rebase";
+              rev = "1cf70811b05d5d34203dfe844b5b71c49cbe8bad";
+              sha256 = "sha256-u2FAF81RfVN7dKbdKcpztc0K/zX1zhsdiGbXgNa2E6I=";
+            }) { };
           };
       };
 
@@ -509,34 +540,36 @@
               ];
 
       # Note: add all the above overrides here to validate build with `nix develop`
-      ghc = pkgs.hspkgs.ghcWithPackages (p: [
-        p.ki
-        p.ki-unlifted
-        p.ed25519
-        p.primitive
-        p.MonadRandom
-        p.ghc-lib-parser
-        p.ghc-lib-parser-ex
-        # p.kubernetes-client
-        # p.morpheus-graphql-client
-        # p.text-time
-        # p.distributed-static
-        # p.json-syntax
-        # p.cgroup-rts-threads
-        # p.ki-effectful
-        # p.servant-effectful
-        # p.xstatic-htmx
-        # p.xstatic-sweetalert2
-        # p.chart-svg
-        # p.json-syntax
-        # p.gerrit
-        # p.tasty-discover
-        # p.markdown-unlit
-        # p.string-qq
-        # p.yaml
-        # p.gloss
-        # p.ansi-terminal-game
-      ]);
+      ghc = pkgs.hspkgs.ghcWithPackages (p:
+        [
+          # p.ki
+          # p.ki-unlifted
+          # p.ed25519
+          # p.primitive
+          # p.MonadRandom
+          # p.ghc-lib-parser
+          # p.ghc-lib-parser-ex
+          p.http2
+          # p.kubernetes-client
+          # p.morpheus-graphql-client
+          # p.text-time
+          # p.distributed-static
+          # p.json-syntax
+          # p.cgroup-rts-threads
+          # p.ki-effectful
+          # p.servant-effectful
+          # p.xstatic-htmx
+          # p.xstatic-sweetalert2
+          # p.chart-svg
+          # p.json-syntax
+          # p.gerrit
+          # p.tasty-discover
+          # p.markdown-unlit
+          # p.string-qq
+          # p.yaml
+          # p.gloss
+          # p.ansi-terminal-game
+        ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       all-pkgs = [
         ghc
