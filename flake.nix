@@ -323,7 +323,7 @@
                 "${kubernetes-client}/kubernetes-client" { });
 
             # bump for ghc96
-            http2 = hpPrev.callCabal2nix "http2" http2 { };
+            http2 = hpPrev.callPackage ./http2.nix { src = http2; };
             indexed-traversable = hpPrev.callCabal2nix "indexed-traversable"
               "${indexed-traversable}/indexed-traversable/" { };
             # this is causing an infinite recursion
