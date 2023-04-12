@@ -52,8 +52,8 @@
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
-        rev = "4da7258f1ea5191e8e85a0075c27a3c629381740";
-        sha256 = "sha256-n73Lrld951tWsh6MpasBtFVCxpZTCHMCZXUzoBfS9Fo=";
+        rev = "1f72fd2e220414c089492698425c47e7c9566159";
+        sha256 = "sha256-6IT8K9noUDIa6ZVjWE3ZrbsElthRCFzBxsCudvpkJ88=";
       };
 
       servant-effectful = pkgs.fetchFromGitHub {
@@ -100,6 +100,7 @@
             servant-xstatic = mk-xstatic-lib "servant-xstatic";
 
             xstatic-ace = mk-xstatic-lib "xstatic-ace";
+            xstatic-pdfjs = mk-xstatic-lib "xstatic-pdfjs";
             xstatic-htmx = mk-xstatic-lib "xstatic-htmx";
             xstatic-tailwind = mk-xstatic-lib "xstatic-tailwind";
             xstatic-sakura = mk-xstatic-lib "xstatic-sakura";
@@ -220,6 +221,7 @@
         p.ki-effectful
         p.servant-effectful
         p.xstatic-ace
+        p.xstatic-pdfjs
         p.xstatic-htmx
         p.xstatic-sweetalert2
         p.chart-svg
