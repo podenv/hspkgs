@@ -7,7 +7,7 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/3665c429d349fbda46b0651e554cca8434452748";
+      "github:NixOS/nixpkgs/22c5bd85d8478e24874ff2b80875506f5c3711a6";
   };
 
   outputs = { self, nixpkgs }:
@@ -20,42 +20,66 @@
         sha256 = "sha256-Qc8MXcV+YCPREu8kk6oggk23ZBKLqeQRAIsLbHEviPE=";
       };
 
-      # Grab ghc92 pr
+      # Pull master for ghc-9.6 compat
+      hlint = pkgs.fetchFromGitHub {
+        owner = "ndmitchell";
+        repo = "hlint";
+        rev = "a37e918f17ed90d236e6066fcd2dc7b1e9d5b2d1";
+        sha256 = "sha256-qJfIy7b2acZAGovJ0P15nQuo/0bDgPLgz4YibJrbZFY=";
+      };
+      calligraphy = pkgs.fetchFromGitHub {
+        owner = "jonascarpay";
+        repo = "calligraphy";
+        rev = "bdcfa999f53efe110577657906f48d734263969e";
+        sha256 = "sha256-r2t7lr0I6BJQfBkfeV3SaXSBdvl1mCAZzbUTXndcNhw=";
+      };
+      morpheus-graphql = pkgs.fetchFromGitHub {
+        owner = "morpheusgraphql";
+        repo = "morpheus-graphql";
+        rev = "0.27.2";
+        sha256 = "sha256-dH5xGrzwFppWbBAIczHDcPUZ5H/N/3rV5Nmfi8NqM0c=";
+      };
+      jose-jwt = pkgs.fetchFromGitHub {
+        owner = "tekul";
+        repo = "jose-jwt";
+        rev = "ec2bd72179a39f34da4637813635b0f2c24537bd";
+        sha256 = "sha256-XM6nW4YjJSwkrd9cuPAlC0cSPuNF30rU2zddih6Nndg=";
+      };
+      streaming = pkgs.fetchFromGitHub {
+        owner = "haskell-streaming";
+        repo = "streaming";
+        rev = "0c815bf9043d0f0cbda92b80ef791892e2b7fb43";
+        sha256 = "sha256-kxMmrKl03eOWpGl09abeH/FnBG5nm2kb4l048dSuAWA=";
+      };
+      servant = pkgs.fetchFromGitHub {
+        owner = "haskell-servant";
+        repo = "servant";
+        rev = "79a29b02329909c94edeacbe2d3124d1d985f9f8";
+        sha256 = "sha256-JHbf2v421bK6HQo+HEXDP8s9qqP6rlwLkpa5A2GZxl8=";
+      };
       kubernetes-client = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
-        repo = "kubernetes-client-haskell";
-        rev = "dd9ebc14958173b87b30c40d92ec38c2601250d1";
-        sha256 = "sha256-Y0rls7MPIHI8aq3HMzJp22f/hCr+R96hlLsATyc/u60=";
-      };
-      # Need latest for ghc92
-      distributed-static = pkgs.fetchFromGitHub {
-        owner = "haskell-distributed";
-        repo = "distributed-static";
-        rev = "03604c7db49fd74a925cba19fe97d5c9f97d8eb4";
-        sha256 = "sha256-4QWCCiJ67CKWrEgAY0mTlZLQVjzUuvtNg55J8ZcKSyI=";
+        owner = "kubernetes-client";
+        repo = "haskell";
+        rev = "1a262bbb7ed5bdcd4c4df925f2a0eeaeadc00a06";
+        sha256 = "sha256-vI6nuV77rpAPXdifO/VmRwHjlRw1nOG5rn4HpF+eHUM=";
       };
 
-      text-time = pkgs.fetchFromGitHub {
-        owner = "klangner";
-        repo = "text-time";
-        rev = "1ff65c2c8845e3fdd99900054f0596818a95c316";
-        sha256 = "sha256-yszIIBEr19aLJtMtuv18e/76TpGWFV30/c0XXM6uavg=";
+      # Unmerged patch
+      # https://github.com/fimad/prometheus-haskell/pull/70
+      prometheus-client = pkgs.fetchFromGitHub {
+        owner = "9999years";
+        repo = "prometheus-haskell";
+        rev = "d1809083b0543fff6e997fd1fbbe63e25ae21622";
+        sha256 = "sha256-+xo7W1albujRqxe6W4vQer9ufMN0cOhVvFVToavC570=";
       };
 
-      ki-effecful = pkgs.fetchFromGitHub {
-        owner = "TristanCacqueray";
-        repo = "ki-effectful";
-        rev = "9a666a8a03a70b00b3b8e22b4176b46eea841f9b";
-        sha256 = "sha256-vQRH6BlhXahexOzQeLcqeKqzA2ctolqPFykb+5kTs1s=";
-      };
-
+      # Unrelease projects
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
         rev = "1f72fd2e220414c089492698425c47e7c9566159";
         sha256 = "sha256-6IT8K9noUDIa6ZVjWE3ZrbsElthRCFzBxsCudvpkJ88=";
       };
-
       servant-effectful = pkgs.fetchFromGitHub {
         owner = "Kleidukos";
         repo = "servant-effectful";
@@ -63,35 +87,200 @@
         sha256 = "sha256-UUNymCKASnpi6fh26Y5GQD3ufjkY7vbVqWwh76GcnU4=";
       };
 
-      compiler = "ghc925";
+      compiler = "ghc961";
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
           let
             mk-xstatic-lib = name:
               hpPrev.callCabal2nix "${name}" "${xstatic}/${name}" { };
+            mk-servant-lib = name:
+              hpPrev.callCabal2nix "sevant${name}" "${servant}/servant${name}"
+              { };
+            mk-servant-auth-lib = name:
+              hpPrev.callCabal2nix "sevant-auth${name}"
+              "${servant}/servant-auth/servant-auth${name}" { };
+            mk-morpheus-lib = name:
+              pkgs.haskell.lib.doJailbreak
+              (hpPrev.callCabal2nix "morpheus-graphql-${name}"
+                "${morpheus-graphql}/morpheus-graphql-${name}" { });
           in {
-            # bump tls for latest
+            # bump versions for hackage latest
             tls = hpPrev.tls_1_6_0;
+            http2 = hpPrev.http2_4_1_2;
+            recv = hpPrev.recv_0_1_0;
+            lens = hpPrev.lens_5_2_2;
+            witch = hpPrev.witch_1_2_0_2;
+            byteslice = hpPrev.byteslice_0_2_9_0;
 
-            # bump timerep to build with latest time
-            timerep = hpPrev.timerep_2_1_0_0;
+            # warp test needs curl
+            warp = pkgs.haskell.lib.dontCheck hpPrev.warp_3_3_25;
+            warp-tls = hpPrev.warp-tls_3_3_6;
 
-            # bump apply-refact for hlint
-            apply-refact = hpPrev.apply-refact_0_11_0_0;
-            hlint = hpPrev.hlint_3_5;
-            ghc-lib = hpPrev.ghc-lib_9_4_4_20221225;
-            ghc-lib-parser = hpPrev.ghc-lib-parser_9_4_4_20221225;
-            ghc-lib-parser-ex = hpPrev.ghc-lib-parser-ex_9_4_0_0;
-            Cabal-syntax = hpPrev.Cabal-syntax_3_8_1_0;
-            fourmolu = hpPrev.fourmolu_0_10_1_0;
-            ormolu = hpPrev.ormolu_0_5_1_0;
+            # Don't check system-fileio to avoid pulling chell and options
+            # https://github.com/fpco/haskell-filesystem/issues/26
+            system-fileio = pkgs.haskell.lib.dontCheck hpPrev.system-fileio;
 
-            text-time = hpPrev.callCabal2nix "text-time" text-time { };
-            # json-syntax test needs old tasty
-            json-syntax = pkgs.haskell.lib.dontCheck
-              (pkgs.haskell.lib.overrideCabal hpPrev.json-syntax {
+            # https://github.com/well-typed/generics-sop/pull/161
+            generics-sop = pkgs.haskell.lib.doJailbreak hpPrev.generics-sop;
+
+            # relax requirements
+            modern-uri = pkgs.haskell.lib.doJailbreak hpPrev.modern-uri;
+            req = pkgs.haskell.lib.doJailbreak hpPrev.req;
+            insert-ordered-containers =
+              pkgs.haskell.lib.doJailbreak hpPrev.insert-ordered-containers;
+            string-qq = pkgs.haskell.lib.doJailbreak hpPrev.string-qq;
+            swagger2 = pkgs.haskell.lib.dontCheck
+              (pkgs.haskell.lib.doJailbreak hpPrev.swagger2);
+            JuicyPixels = hpPrev.JuicyPixels_3_3_8;
+            vector = pkgs.haskell.lib.dontCheck
+              (pkgs.haskell.lib.doJailbreak hpPrev.vector_0_13_0_0);
+            vector-algorithms = hpPrev.vector-algorithms_0_9_0_1;
+            vector-binary-instances =
+              pkgs.haskell.lib.doJailbreak hpPrev.vector-binary-instances;
+            lucid-svg = pkgs.haskell.lib.doJailbreak hpPrev.lucid-svg;
+            zigzag = pkgs.haskell.lib.doJailbreak hpPrev.zigzag;
+            proto3-wire = pkgs.haskell.lib.doJailbreak
+              (pkgs.haskell.lib.dontCheck hpPrev.proto3-wire);
+            one-line-aeson-text =
+              pkgs.haskell.lib.doJailbreak hpPrev.one-line-aeson-text;
+            bytebuild = pkgs.haskell.lib.doJailbreak hpPrev.bytebuild;
+            bugzilla-redhat =
+              pkgs.haskell.lib.doJailbreak hpPrev.bugzilla-redhat;
+            dhall = pkgs.haskell.lib.doJailbreak hpPrev.dhall;
+            weeder = pkgs.haskell.lib.doJailbreak hpPrev.weeder;
+
+            # proto3-suite need a fix
+            proto3-suite = pkgs.haskell.lib.dontCheck
+              (pkgs.haskell.lib.disableCabalFlag (pkgs.haskell.lib.overrideCabal
+                (pkgs.haskell.lib.doJailbreak hpPrev.proto3-suite) {
+                  patches = [
+                    (pkgs.fetchpatch {
+                      url =
+                        "https://github.com/awakesecurity/proto3-suite/commit/a2f50e9aa88d3600b681b34f944c319ac101dff8.patch";
+                      sha256 =
+                        "sha256-bGOmzJnsVuHYTZhvUMMp/QVGA4ZhIKaGhp9Hm0hFN9s=";
+                    })
+                  ];
+                }) "swagger");
+
+            # scientific-notation fix
+            scientific-notation =
+              pkgs.haskell.lib.overrideCabal hpPrev.scientific-notation {
+                patches = [
+                  (pkgs.fetchpatch {
+                    url =
+                      "https://github.com/andrewthad/scientific-notation/commit/956eb989310e3d03d8209564891158078d391376.patch";
+                    sha256 =
+                      "sha256-JJiN95LxmNjvtccdiqEfTNrnzE5ZvDZ7S8cGwzbc//w=";
+                  })
+                ];
+
+              };
+
+            # data-diverse is presently marked as broken because the test don't pass.
+            data-diverse = pkgs.haskell.lib.dontCheck
+              (pkgs.haskell.lib.overrideCabal hpPrev.data-diverse {
                 broken = false;
               });
+
+            # https://github.com/alexkazik/qrcode/pull/5
+            qrcode-core = pkgs.haskell.lib.doJailbreak hpPrev.qrcode-core;
+            qrcode-juicypixels =
+              pkgs.haskell.lib.doJailbreak hpPrev.qrcode-juicypixels;
+
+            # ki needs HEAD
+            ki = let
+              src = pkgs.fetchFromGitHub {
+                owner = "awkward-squad";
+                repo = "ki";
+                rev = "c3edf709f7361e0a25c2d2be2f3077c785616a21";
+                sha256 = "sha256-EFV6ng9Ht5JzrSaDOiCqJQZjPMEoWqUzGgFCkb9WA3g=";
+              };
+            in hpPrev.callCabal2nix "ki" "${src}/ki" { };
+
+            # Gerrit needs HEAD
+            gerrit = let
+              src = pkgs.fetchFromGitHub {
+                owner = "softwarefactory-project";
+                repo = "gerrit-haskell";
+                rev = "daa44c450f819f3af2879099ec065c1efb973ef8";
+                sha256 = "sha256-g+nMToAq1J8756Yres6xKraQq3QU3FcMjyLvaqVnrKc=";
+              };
+            in hpPrev.callCabal2nix "gerrit" src { };
+
+            # Streaming needs HEAD
+            streaming = hpPrev.callCabal2nix "streaming" streaming { };
+
+            # test failure reported: https://github.com/sjakobi/bsb-http-chunked/issues/45
+            bsb-http-chunked =
+              pkgs.haskell.lib.dontCheck hpPrev.bsb-http-chunked;
+            # test failure reported: https://github.com/kowainik/relude/issues/436
+            relude = pkgs.haskell.lib.dontCheck
+              (pkgs.haskell.lib.doJailbreak hpPrev.relude_1_2_0_0);
+
+            # Servant needs HEAD
+            servant = pkgs.haskell.lib.doJailbreak (mk-servant-lib "");
+            servant-foreign = mk-servant-lib "-foreign";
+            servant-server =
+              pkgs.haskell.lib.doJailbreak (mk-servant-lib "-server");
+            servant-auth =
+              pkgs.haskell.lib.doJailbreak (mk-servant-auth-lib "");
+            # servant-auth-server test hangs
+            servant-auth-server = pkgs.haskell.lib.doJailbreak
+              (pkgs.haskell.lib.dontCheck (mk-servant-auth-lib "-server"));
+
+            # Morpheus needs HEAD
+            morpheus-graphql-tests = mk-morpheus-lib "tests";
+            # test failure reported: https://github.com/morpheusgraphql/morpheus-graphql/issues/824
+            morpheus-graphql-app =
+              pkgs.haskell.lib.dontCheck (mk-morpheus-lib "app");
+            morpheus-graphql-core = mk-morpheus-lib "core";
+            morpheus-graphql-code-gen = mk-morpheus-lib "code-gen";
+            morpheus-graphql-client = mk-morpheus-lib "client";
+            morpheus-graphql-subscriptions = mk-morpheus-lib "subscriptions";
+            jose-jwt = hpPrev.callCabal2nix "jose-jwt" jose-jwt { };
+            jose = hpPrev.jose_0_10;
+
+            # bump apply-refact for hlint
+            apply-refact = pkgs.haskell.lib.doJailbreak
+              (pkgs.haskell.lib.overrideCabal hpPrev.apply-refact_0_12_0_0 {
+                patches = [
+                  (pkgs.fetchpatch {
+                    url =
+                      "https://github.com/mpickering/apply-refact/commit/99cff95285dec909ff32fef3c6284976b74b0855.patch";
+                    sha256 =
+                      "sha256-W4+3Gj9KvxBmqzrEvvx566EGRc8IRpUdMiPfWTPR7rw=";
+                  })
+                ];
+              });
+            hlint = hpPrev.callCabal2nix "hlint" hlint { };
+            calligraphy = hpPrev.callCabal2nix "calligraphy" calligraphy { };
+
+            # prometheus-client needs patch for mtl
+            prometheus-client = hpPrev.callCabal2nix "prometheus-client"
+              "${prometheus-client}/prometheus-client" { };
+
+            # Fourmolu test failure:
+            # fourmolu>   region-tests/Main.hs:11:7:
+            # fourmolu>   1) region-tests Works with implicit arguments
+            # fourmolu>        uncaught exception: IOException of type UserError
+            # fourmolu>        user error (Could not find fourmolu executable)
+            fourmolu = pkgs.haskell.lib.dontCheck hpPrev.fourmolu_0_12_0_0;
+            ormolu = hpPrev.ormolu_0_6_0_1;
+
+            # relax base bound
+
+            # json-syntax test needs old tasty
+            json-syntax = pkgs.haskell.lib.doJailbreak
+              (pkgs.haskell.lib.dontCheck
+                (pkgs.haskell.lib.overrideCabal hpPrev.json-syntax {
+                  broken = false;
+                }));
+
+            retry = pkgs.haskell.lib.overrideCabal hpPrev.retry {
+              version = "0.9.3.1";
+              sha256 = "sha256-Yi41EUuSD3b6LhrmUVV1uZc/rBnGefVCbqZXSl0LftY=";
+            };
 
             xstatic = mk-xstatic-lib "xstatic";
             xstatic-th = mk-xstatic-lib "xstatic-th";
@@ -114,8 +303,6 @@
             xstatic-pcm-player = mk-xstatic-lib "xstatic-pcm-player";
 
             # extra effectful package
-            ki-effectful = pkgs.haskell.lib.dontCheck
-              (hpPrev.callCabal2nix "ki-effectful" ki-effecful { });
             servant-effectful =
               hpPrev.callCabal2nix "servant-effectful" servant-effectful { };
 
@@ -130,8 +317,6 @@
               (pkgs.haskell.lib.overrideCabal hpPrev.rank1dynamic {
                 broken = false;
               });
-            distributed-static =
-              hpPrev.callCabal2nix "distributed-static" distributed-static { };
 
             kubernetes-client-core = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client-core"
@@ -140,11 +325,6 @@
             kubernetes-client = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client"
                 "${kubernetes-client}/kubernetes-client" { });
-
-            weeder = pkgs.haskell.lib.overrideCabal hpPrev.weeder {
-              version = "2.4.1";
-              sha256 = "sha256-KV4ROsWabRBD8CkXJzqi3BEZvIw/uNN7xu8GDTDiJ/w=";
-            };
           };
       };
 
@@ -153,7 +333,7 @@
           mk-exe = prev.haskell.lib.justStaticExecutables;
           hspkgs = prev.haskell.packages.${compiler}.override haskellOverrides;
           hls = prev.haskell-language-server.override {
-            supportedGhcVersions = [ "925" ];
+            supportedGhcVersions = [ "961" ];
           };
           nixGL = import nixGLSrc { pkgs = prev; };
         in {
@@ -212,36 +392,33 @@
       # Note: add all the above overrides here to validate build with `nix develop`
       ghc = pkgs.hspkgs.ghcWithPackages (p: [
         p.ki
+        p.http2
         # p.kubernetes-client
         p.morpheus-graphql-client
+        p.jose-jwt
         p.text-time
-        p.distributed-static
-        p.json-syntax
+        p.dhall
+        p.turtle
+        p.insert-ordered-containers
+        p.proto3-suite
+        # p.json-syntax
         p.cgroup-rts-threads
         p.ki-effectful
-        p.servant-effectful
-        p.xstatic-ace
-        p.xstatic-pdfjs
-        p.xstatic-htmx
-        p.xstatic-sweetalert2
-        p.chart-svg
-        p.json-syntax
+        p.jose
+        p.turtle
+        p.streaming
         p.gerrit
-        p.tasty-discover
-        p.markdown-unlit
         p.string-qq
-        p.yaml
-        p.gloss
-        p.ansi-terminal-game
+        p.bytebuild
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       all-pkgs = [
         ghc
         # pkgs.nixGL.auto.nixGLDefault
         # ghc-static
-        pkgs.nixGLIntel
+        # pkgs.nixGLIntel
         pkgs.weeder
-        pkgs.ormolu
+        # pkgs.ormolu
         pkgs.fourmolu
         pkgs.hlint
         pkgs.hpack
