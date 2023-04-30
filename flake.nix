@@ -36,14 +36,8 @@
       morpheus-graphql = pkgs.fetchFromGitHub {
         owner = "morpheusgraphql";
         repo = "morpheus-graphql";
-        rev = "0.27.2";
-        sha256 = "sha256-dH5xGrzwFppWbBAIczHDcPUZ5H/N/3rV5Nmfi8NqM0c=";
-      };
-      jose-jwt = pkgs.fetchFromGitHub {
-        owner = "tekul";
-        repo = "jose-jwt";
-        rev = "ec2bd72179a39f34da4637813635b0f2c24537bd";
-        sha256 = "sha256-XM6nW4YjJSwkrd9cuPAlC0cSPuNF30rU2zddih6Nndg=";
+        rev = "0.27.3";
+        sha256 = "sha256-pwc8cXFTQl6f/VgRXoQjYlBOZoG0goHXwgehB0Bxpls=";
       };
       streaming = pkgs.fetchFromGitHub {
         owner = "haskell-streaming";
@@ -111,17 +105,30 @@
             lens = hpPrev.lens_5_2_2;
             witch = hpPrev.witch_1_2_0_2;
             byteslice = hpPrev.byteslice_0_2_9_0;
+            turtle = hpPrev.turtle_1_6_1;
+
+            # For cabal-plan, but that cause infinit recursion
+            # these = hpPrev.these_1_2;
+            # semialign = hpPrev.semialign_1_3;
+            # base-compat = pkgs.haskell.lib.dontCheck hpPrev.base-compat_0_13_0;
+            # cabal-plan = pkgs.haskell.lib.overrideCabal hpPrev.cabal-plan {
+            #   version = "0.7.3.0";
+            #   sha256 = "sha256-zNxUhUsRFyfZm3ftYzPZ9gx/XuAkAlGy5HiOAFtxXmY=";
+            #   revision = null;
+            #   editedCabalFile = null;
+            # };
 
             # warp test needs curl
             warp = pkgs.haskell.lib.dontCheck hpPrev.warp_3_3_25;
             warp-tls = hpPrev.warp-tls_3_3_6;
 
-            # Don't check system-fileio to avoid pulling chell and options
-            # https://github.com/fpco/haskell-filesystem/issues/26
-            system-fileio = pkgs.haskell.lib.dontCheck hpPrev.system-fileio;
-
             # https://github.com/well-typed/generics-sop/pull/161
-            generics-sop = pkgs.haskell.lib.doJailbreak hpPrev.generics-sop;
+            generics-sop = pkgs.haskell.lib.overrideCabal hpPrev.generics-sop {
+              version = "0.5.1.3";
+              sha256 = "sha256-7JzHucpHFP1nU4rEpeqYDscxz+DwhMCX+N0oS1Zprwc=";
+              revision = null;
+              editedCabalFile = null;
+            };
 
             # relax requirements
             modern-uri = pkgs.haskell.lib.doJailbreak hpPrev.modern-uri;
@@ -231,14 +238,17 @@
 
             # Morpheus needs HEAD
             morpheus-graphql-tests = mk-morpheus-lib "tests";
-            # test failure reported: https://github.com/morpheusgraphql/morpheus-graphql/issues/824
-            morpheus-graphql-app =
-              pkgs.haskell.lib.dontCheck (mk-morpheus-lib "app");
+            morpheus-graphql-app = mk-morpheus-lib "app";
             morpheus-graphql-core = mk-morpheus-lib "core";
             morpheus-graphql-code-gen = mk-morpheus-lib "code-gen";
             morpheus-graphql-client = mk-morpheus-lib "client";
             morpheus-graphql-subscriptions = mk-morpheus-lib "subscriptions";
-            jose-jwt = hpPrev.callCabal2nix "jose-jwt" jose-jwt { };
+            jose-jwt = pkgs.haskell.lib.overrideCabal hpPrev.jose-jwt {
+              version = "0.9.5";
+              sha256 = "sha256-p9wKa/qSA8ldpV2DoE8eoMQjDcMcA1CcsACUjrtBhkc=";
+              revision = null;
+              editedCabalFile = null;
+            };
             jose = hpPrev.jose_0_10;
 
             # bump apply-refact for hlint
@@ -348,6 +358,7 @@
           tasty-discover = mk-exe hspkgs.tasty-discover;
           # replace the global cabal-install by the one provided by the right compiler set
           cabal-install = prev.haskell.packages.${compiler}.cabal-install;
+          # cabal-plan = mk-exe hspkgs.cabal-plan;
 
           hspkgsMusl = prev.pkgsMusl.haskell.packages.${compiler}.override
             haskellOverrides;
@@ -395,13 +406,14 @@
         p.http2
         # p.kubernetes-client
         p.morpheus-graphql-client
+        p.generics-sop
         p.jose-jwt
         p.text-time
         p.dhall
         p.turtle
         p.insert-ordered-containers
         p.proto3-suite
-        # p.json-syntax
+        p.json-syntax
         p.cgroup-rts-threads
         p.ki-effectful
         p.jose
@@ -418,6 +430,8 @@
         # ghc-static
         # pkgs.nixGLIntel
         pkgs.weeder
+        pkgs.cabal-install
+        # pkgs.cabal-plan
         # pkgs.ormolu
         pkgs.fourmolu
         pkgs.hlint
