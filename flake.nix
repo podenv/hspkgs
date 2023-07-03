@@ -81,6 +81,13 @@
         sha256 = "sha256-UUNymCKASnpi6fh26Y5GQD3ufjkY7vbVqWwh76GcnU4=";
       };
 
+      grin-compiler = pkgs.fetchFromGitHub {
+        owner = "TristanCacqueray";
+        repo = "ghc-whole-program-compiler-project";
+        rev = "53ec37d66f17dc38c7bfb236351c9199984b92b6";
+        sha256 = "sha256-UeVhleVCx3KRmNMDaCkBrq+uVVpjjP7KEfTEYPM1uHQ=";
+      };
+
       compiler = "ghc961";
       haskellOverrides = {
         overrides = hpFinal: hpPrev:
@@ -97,6 +104,9 @@
               pkgs.haskell.lib.doJailbreak
               (hpPrev.callCabal2nix "morpheus-graphql-${name}"
                 "${morpheus-graphql}/morpheus-graphql-${name}" { });
+
+            mk-grin-lib = name:
+              hpPrev.callCabal2nix name "${grin-compiler}/${name}" { };
           in {
             # bump versions for hackage latest
             tls = hpPrev.tls_1_6_0;
@@ -335,6 +345,40 @@
             kubernetes-client = pkgs.haskell.lib.dontCheck
               (hpPrev.callCabal2nix "kubernetes-client"
                 "${kubernetes-client}/kubernetes-client" { });
+
+            # grin-compiler
+            zip = pkgs.haskell.lib.doJailbreak hpPrev.zip;
+            wpc-plugin = mk-grin-lib "wpc-plugin";
+            fgl = hpPrev.fgl_5_8_1_1;
+            souffle-haskell = pkgs.haskell.lib.doJailbreak
+              (pkgs.haskell.lib.dontCheck
+                (pkgs.haskell.lib.overrideCabal hpPrev.souffle-haskell {
+                  broken = false;
+                  src = pkgs.fetchFromGitHub {
+                    owner = "TristanCacqueray";
+                    repo = "souffle-haskell";
+                    rev = "ebdf13f4927df078a2a5195a9c2374673d9c1454";
+                    sha256 =
+                      "sha256-uIaw/TT8185JbJsuGmxgnWz/VjM6adlxfmFXpLd4YM8=";
+                  };
+                }));
+            final-pretty-printer = let
+              src = pkgs.fetchFromGitHub {
+                owner = "TristanCacqueray";
+                repo = "final-pretty-printer";
+                rev = "b6ec73637178a0c735ac52958386eb81d76e6d8c";
+                sha256 = "sha256-NxYrChNXhmVFz7VOrAlx5ULrNd6euHD8z6zsy6h48yc=";
+              };
+            in hpPrev.callCabal2nix "final-pretty-printer" src { };
+            async-pool = pkgs.haskell.lib.overrideCabal hpPrev.async-pool {
+              version = "0.9.2";
+              sha256 = "sha256-cu0zgAN+bJLkL6hOyC6BTcsVaqLEPkHeuQlxUJC0FoM=";
+              revision = null;
+              editedCabalFile = null;
+            };
+            external-stg = mk-grin-lib "external-stg";
+            external-stg-syntax = mk-grin-lib "external-stg-syntax";
+            external-stg-interpreter = mk-grin-lib "external-stg-interpreter";
           };
       };
 
@@ -349,6 +393,7 @@
         in {
           hspkgs = hspkgs;
           haskell-language-server = hls;
+          zip-cmd = mk-exe hspkgs.zip-cmd;
           hlint = mk-exe hspkgs.hlint;
           weeder = mk-exe hspkgs.weeder;
           ormolu = mk-exe hspkgs.ormolu;
@@ -402,6 +447,7 @@
 
       # Note: add all the above overrides here to validate build with `nix develop`
       ghc = pkgs.hspkgs.ghcWithPackages (p: [
+        p.hspec
         p.ki
         p.http2
         # p.kubernetes-client
@@ -422,6 +468,16 @@
         p.gerrit
         p.string-qq
         p.bytebuild
+
+        # wpc
+        p.wpc-plugin
+        p.async-pool
+        p.souffle-haskell
+        p.fgl
+        p.digest
+        p.bzlib-conduit
+        p.final-pretty-printer
+        p.external-stg-syntax
       ]);
       ghc-static = pkgs.hspkgsMusl.ghcWithPackages (p: [ p.relude ]);
       all-pkgs = [
@@ -441,6 +497,7 @@
         pkgs.calligraphy
         pkgs.haskell-language-server
         pkgs.ghcid
+        pkgs.zip-cmd
       ];
 
     in {
