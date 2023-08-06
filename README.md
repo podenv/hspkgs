@@ -8,7 +8,7 @@ Feel free to add your own workarounds.
 
 Packages:
 
-- ghc-9.6.1
+- ghc-9.6.2
 - weeder
 - calligraphy
 - apply-refact
