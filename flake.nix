@@ -88,11 +88,17 @@
               src = pkgs.fetchFromGitHub {
                 owner = "awakesecurity";
                 repo = "proto3-suite";
-                rev = "9f7daef66ba6dfc9574039b1d206c5df126d4b39";
-                sha256 = "sha256-1a1ZHlvvtE1urvDL7n984OQ5gbro26RnKAjvDCH/2fs=";
+                # https://github.com/awakesecurity/proto3-suite/pull/239
+                rev = "6b6245fe8526a1f9fd64472bf1218bd7fdea9960";
+                sha256 = "sha256-XYGeQJ2EXDnezI8NfhI+R3t1k31PKyfg9doOKp5FsCk=";
               };
               pkg = hpPrev.callCabal2nix "proto3-suite" src { };
-            in pkgs.haskell.lib.dontCheck (pkgs.haskell.lib.doJailbreak pkg);
+            in pkgs.lib.pipe pkg [
+              pkgs.haskell.lib.compose.doJailbreak
+              pkgs.haskell.lib.compose.dontCheck
+              (pkgs.haskell.lib.compose.disableCabalFlag "swagger")
+              (pkgs.haskell.lib.compose.disableCabalFlag "large-records")
+            ];
 
             # relax bound for base
             zigzag = pkgs.haskell.lib.doJailbreak hpPrev.zigzag;
@@ -322,7 +328,7 @@
       devShell.x86_64-linux = pkgs.mkShell { buildInputs = all-pkgs; };
 
       devShells.x86_64-linux.test = pkgs.hspkgs.shellFor {
-        packages = p: [ p.large-records ];
+        packages = p: [ p.proto3-suite ];
         buildInputs = [ pkgs.ghcid pkgs.cabal-install ];
       };
     };
