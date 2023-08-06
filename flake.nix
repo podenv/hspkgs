@@ -81,24 +81,6 @@
 
             # relax req bound for http-data
             req = pkgs.haskell.lib.doJailbreak hpPrev.req;
-            # relax bound for doctest, ghc-prim, primitive, template-haskell, text and transformers
-            proto3-wire = pkgs.haskell.lib.doJailbreak hpPrev.proto3-wire;
-            # proto3-suite needs HEAD for swagger fix
-            proto3-suite = let
-              src = pkgs.fetchFromGitHub {
-                owner = "awakesecurity";
-                repo = "proto3-suite";
-                # https://github.com/awakesecurity/proto3-suite/pull/239
-                rev = "6b6245fe8526a1f9fd64472bf1218bd7fdea9960";
-                sha256 = "sha256-XYGeQJ2EXDnezI8NfhI+R3t1k31PKyfg9doOKp5FsCk=";
-              };
-              pkg = hpPrev.callCabal2nix "proto3-suite" src { };
-            in pkgs.lib.pipe pkg [
-              pkgs.haskell.lib.compose.doJailbreak
-              pkgs.haskell.lib.compose.dontCheck
-              (pkgs.haskell.lib.compose.disableCabalFlag "swagger")
-              (pkgs.haskell.lib.compose.disableCabalFlag "large-records")
-            ];
 
             # relax bound for base
             zigzag = pkgs.haskell.lib.doJailbreak hpPrev.zigzag;
