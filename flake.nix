@@ -50,131 +50,164 @@
         sha256 = "sha256-W6Xh6aVOsx9rgM6IVin6w7Z3e9yUESSaxfejkyU0ekY=";
       };
 
-      compiler = "ghc962";
-      haskellOverrides = {
-        overrides = hpFinal: hpPrev:
-          let
-            mk-xstatic-lib = name:
-              hpPrev.callCabal2nix "${name}" "${xstatic}/${name}" { };
-            mk-large-rec = name:
-              pkgs.haskell.lib.doJailbreak
-              (hpPrev.callCabal2nix "${name}" "${large-records}/${name}" { });
-          in {
-            # Gerrit needs HEAD
-            gerrit = let
-              src = pkgs.fetchFromGitHub {
-                owner = "softwarefactory-project";
-                repo = "gerrit-haskell";
-                rev = "daa44c450f819f3af2879099ec065c1efb973ef8";
-                sha256 = "sha256-g+nMToAq1J8756Yres6xKraQq3QU3FcMjyLvaqVnrKc=";
-              };
-            in hpPrev.callCabal2nix "gerrit" src { };
-
-            hlint = hpPrev.hlint_3_6_1;
-
-            # lucid-svg needs https://github.com/jeffreyrosenbluth/lucid-svg/pull/17
-            lucid-svg = pkgs.haskell.lib.doJailbreak hpPrev.lucid-svg;
-
-            # https://github.com/typeclasses/one-line-aeson-text/pull/1
-            one-line-aeson-text =
-              pkgs.haskell.lib.doJailbreak hpPrev.one-line-aeson-text;
-
-            # relax req bound for http-data
-            req = pkgs.haskell.lib.doJailbreak hpPrev.req;
-
-            # relax bound for base
-            zigzag = pkgs.haskell.lib.doJailbreak hpPrev.zigzag;
-            bytebuild = pkgs.haskell.lib.doJailbreak hpPrev.bytebuild;
-            nixfmt = pkgs.haskell.lib.doJailbreak hpPrev.nixfmt;
-
-            # data-diverse is presently marked as broken because the test don't pass.
-            data-diverse = pkgs.haskell.lib.dontCheck
-              (pkgs.haskell.lib.overrideCabal hpPrev.data-diverse {
-                broken = false;
-              });
-
-            # https://github.com/ndmitchell/record-dot-preprocessor/pull/59
-            record-dot-preprocessor = let
-              src = pkgs.fetchFromGitHub {
-                owner = "TristanCacqueray";
-                repo = "record-dot-preprocessor";
-                rev = "b33a0a443d746d7a1745b1c5f50e0ccfb686cf71";
-                sha256 = "sha256-EkSuUjYoUO2WTBseO981VrYZTuuFls2Q+bxovtgq5WI=";
-              };
-            in hpPrev.callCabal2nix "record-dot-processor" src { };
-
-            large-generics = mk-large-rec "large-generics";
-            large-records = mk-large-rec "large-records";
-
-            # https://github.com/fakedata-haskell/fakedata/issues/51
-            fakedata = pkgs.haskell.lib.dontCheck hpPrev.fakedata;
-
-            # prometheus-client needs latest version
-            prometheus-client =
-              pkgs.haskell.lib.overrideCabal hpPrev.prometheus-client {
-                version = "1.1.1";
-                sha256 = "sha256-anCex0llHYbh46EYkZPT1qdEier48QKXwxzIY/xGRMg=";
-                revision = null;
-                editedCabalFile = null;
-              };
-
-            # json-syntax test needs old tasty
-            json-syntax = pkgs.haskell.lib.doJailbreak
-              (pkgs.haskell.lib.dontCheck
-                (pkgs.haskell.lib.overrideCabal hpPrev.json-syntax {
-                  broken = false;
-                }));
-
-            fourmolu = hpPrev.fourmolu_0_13_1_0;
-
-            xstatic = mk-xstatic-lib "xstatic";
-            xstatic-th = mk-xstatic-lib "xstatic-th";
-            lucid-xstatic = mk-xstatic-lib "lucid-xstatic";
-            lucid2-xstatic = mk-xstatic-lib "lucid2-xstatic";
-            servant-xstatic = mk-xstatic-lib "servant-xstatic";
-            xstatic-ace = mk-xstatic-lib "xstatic-ace";
-            xstatic-pdfjs = mk-xstatic-lib "xstatic-pdfjs";
-            xstatic-htmx = mk-xstatic-lib "xstatic-htmx";
-            xstatic-tailwind = mk-xstatic-lib "xstatic-tailwind";
-            xstatic-sakura = mk-xstatic-lib "xstatic-sakura";
-            xstatic-sweetalert2 = mk-xstatic-lib "xstatic-sweetalert2";
-            xstatic-hyperscript = mk-xstatic-lib "xstatic-hyperscript";
-            xstatic-remixicon = mk-xstatic-lib "xstatic-remixicon";
-            xstatic-sortable = mk-xstatic-lib "xstatic-sortable";
-            xstatic-xterm = mk-xstatic-lib "xstatic-xterm";
-            xstatic-novnc = mk-xstatic-lib "xstatic-novnc";
-            xstatic-winbox = mk-xstatic-lib "xstatic-winbox";
-            xstatic-pcm-player = mk-xstatic-lib "xstatic-pcm-player";
-
-            # extra effectful package
-            servant-effectful =
-              hpPrev.callCabal2nix "servant-effectful" servant-effectful { };
-
-            # there is a test failure: resolveGroupController should resolve a direct mount root
-            cgroup-rts-threads = pkgs.haskell.lib.dontCheck
-              (pkgs.haskell.lib.overrideCabal hpPrev.cgroup-rts-threads {
-                broken = false;
-              });
-
-            kubernetes-client-core = pkgs.haskell.lib.dontCheck
-              (hpPrev.callCabal2nix "kubernetes-client-core"
-                "${kubernetes-client}/kubernetes" { });
-
-            kubernetes-client = pkgs.haskell.lib.dontCheck
-              (hpPrev.callCabal2nix "kubernetes-client"
-                "${kubernetes-client}/kubernetes-client" { });
-          };
+      # Pull cabal master for https://github.com/haskell/cabal/pull/8726 available through the pkgs.cabal-multi-repl package
+      cabal-head = pkgs.fetchFromGitHub {
+        owner = "haskell";
+        repo = "cabal";
+        rev = "f775857310e3af7e9ca508c735f1b9387ba56c01";
+        sha256 = "sha256-2FYljBTk8C1YZOYMAGClrEniUN8naimhqohzRMEWGMQ=";
       };
+
+      compiler = "ghc962";
+      multiCabalExtend = hpFinal: hpPrev: {
+        cabal-install = pkgs.haskell.lib.dontCheck
+          (hpPrev.callCabal2nix "cabal-install" "${cabal-head}/cabal-install"
+            { });
+        cabal-install-solver = pkgs.haskell.lib.dontCheck
+          (hpPrev.callCabal2nix "cabal-install-solver"
+            "${cabal-head}/cabal-install-solver" { });
+        Cabal-described = pkgs.haskell.lib.dontCheck
+          (hpPrev.callCabal2nix "Cabal-described"
+            "${cabal-head}/Cabal-described" { });
+        Cabal-QuickCheck = pkgs.haskell.lib.dontCheck
+          (hpPrev.callCabal2nix "Cabal-QuickCheck"
+            "${cabal-head}/Cabal-QuickCheck" { });
+        Cabal-tree-diff = pkgs.haskell.lib.dontCheck
+          (hpPrev.callCabal2nix "Cabal-tree-diff"
+            "${cabal-head}/Cabal-tree-diff" { });
+        Cabal-syntax = pkgs.haskell.lib.dontCheck
+          (hpPrev.callCabal2nix "Cabal-syntax" "${cabal-head}/Cabal-syntax"
+            { });
+        Cabal = pkgs.haskell.lib.dontCheck
+          (hpPrev.callCabal2nix "Cabal" "${cabal-head}/Cabal" { });
+        semaphore-compat = pkgs.haskell.lib.dontCheck
+          (pkgs.haskell.lib.overrideCabal hpPrev.semaphore-compat {
+            broken = false;
+          });
+      };
+
+      haskellExtend = hpFinal: hpPrev:
+        let
+          mk-xstatic-lib = name:
+            hpPrev.callCabal2nix "${name}" "${xstatic}/${name}" { };
+          mk-large-rec = name:
+            pkgs.haskell.lib.doJailbreak
+            (hpPrev.callCabal2nix "${name}" "${large-records}/${name}" { });
+        in {
+          # Gerrit needs HEAD
+          gerrit = let
+            src = pkgs.fetchFromGitHub {
+              owner = "softwarefactory-project";
+              repo = "gerrit-haskell";
+              rev = "daa44c450f819f3af2879099ec065c1efb973ef8";
+              sha256 = "sha256-g+nMToAq1J8756Yres6xKraQq3QU3FcMjyLvaqVnrKc=";
+            };
+          in hpPrev.callCabal2nix "gerrit" src { };
+
+          hlint = hpPrev.hlint_3_6_1;
+
+          # lucid-svg needs https://github.com/jeffreyrosenbluth/lucid-svg/pull/17
+          lucid-svg = pkgs.haskell.lib.doJailbreak hpPrev.lucid-svg;
+
+          # https://github.com/typeclasses/one-line-aeson-text/pull/1
+          one-line-aeson-text =
+            pkgs.haskell.lib.doJailbreak hpPrev.one-line-aeson-text;
+
+          # relax req bound for http-data
+          req = pkgs.haskell.lib.doJailbreak hpPrev.req;
+
+          # relax bound for base
+          zigzag = pkgs.haskell.lib.doJailbreak hpPrev.zigzag;
+          bytebuild = pkgs.haskell.lib.doJailbreak hpPrev.bytebuild;
+          nixfmt = pkgs.haskell.lib.doJailbreak hpPrev.nixfmt;
+
+          # data-diverse is presently marked as broken because the test don't pass.
+          data-diverse = pkgs.haskell.lib.dontCheck
+            (pkgs.haskell.lib.overrideCabal hpPrev.data-diverse {
+              broken = false;
+            });
+
+          # https://github.com/ndmitchell/record-dot-preprocessor/pull/59
+          record-dot-preprocessor = let
+            src = pkgs.fetchFromGitHub {
+              owner = "TristanCacqueray";
+              repo = "record-dot-preprocessor";
+              rev = "b33a0a443d746d7a1745b1c5f50e0ccfb686cf71";
+              sha256 = "sha256-EkSuUjYoUO2WTBseO981VrYZTuuFls2Q+bxovtgq5WI=";
+            };
+          in hpPrev.callCabal2nix "record-dot-processor" src { };
+
+          large-generics = mk-large-rec "large-generics";
+          large-records = mk-large-rec "large-records";
+
+          # https://github.com/fakedata-haskell/fakedata/issues/51
+          fakedata = pkgs.haskell.lib.dontCheck hpPrev.fakedata;
+
+          # prometheus-client needs latest version
+          prometheus-client =
+            pkgs.haskell.lib.overrideCabal hpPrev.prometheus-client {
+              version = "1.1.1";
+              sha256 = "sha256-anCex0llHYbh46EYkZPT1qdEier48QKXwxzIY/xGRMg=";
+              revision = null;
+              editedCabalFile = null;
+            };
+
+          # json-syntax test needs old tasty
+          json-syntax = pkgs.haskell.lib.doJailbreak (pkgs.haskell.lib.dontCheck
+            (pkgs.haskell.lib.overrideCabal hpPrev.json-syntax {
+              broken = false;
+            }));
+
+          fourmolu = hpPrev.fourmolu_0_13_1_0;
+
+          xstatic = mk-xstatic-lib "xstatic";
+          xstatic-th = mk-xstatic-lib "xstatic-th";
+          lucid-xstatic = mk-xstatic-lib "lucid-xstatic";
+          lucid2-xstatic = mk-xstatic-lib "lucid2-xstatic";
+          servant-xstatic = mk-xstatic-lib "servant-xstatic";
+          xstatic-ace = mk-xstatic-lib "xstatic-ace";
+          xstatic-pdfjs = mk-xstatic-lib "xstatic-pdfjs";
+          xstatic-htmx = mk-xstatic-lib "xstatic-htmx";
+          xstatic-tailwind = mk-xstatic-lib "xstatic-tailwind";
+          xstatic-sakura = mk-xstatic-lib "xstatic-sakura";
+          xstatic-sweetalert2 = mk-xstatic-lib "xstatic-sweetalert2";
+          xstatic-hyperscript = mk-xstatic-lib "xstatic-hyperscript";
+          xstatic-remixicon = mk-xstatic-lib "xstatic-remixicon";
+          xstatic-sortable = mk-xstatic-lib "xstatic-sortable";
+          xstatic-xterm = mk-xstatic-lib "xstatic-xterm";
+          xstatic-novnc = mk-xstatic-lib "xstatic-novnc";
+          xstatic-winbox = mk-xstatic-lib "xstatic-winbox";
+          xstatic-pcm-player = mk-xstatic-lib "xstatic-pcm-player";
+
+          # extra effectful package
+          servant-effectful =
+            hpPrev.callCabal2nix "servant-effectful" servant-effectful { };
+
+          # there is a test failure: resolveGroupController should resolve a direct mount root
+          cgroup-rts-threads = pkgs.haskell.lib.dontCheck
+            (pkgs.haskell.lib.overrideCabal hpPrev.cgroup-rts-threads {
+              broken = false;
+            });
+
+          kubernetes-client-core = pkgs.haskell.lib.dontCheck
+            (hpPrev.callCabal2nix "kubernetes-client-core"
+              "${kubernetes-client}/kubernetes" { });
+
+          kubernetes-client = pkgs.haskell.lib.dontCheck
+            (hpPrev.callCabal2nix "kubernetes-client"
+              "${kubernetes-client}/kubernetes-client" { });
+        };
 
       overlay = final: prev:
         let
           mk-exe = prev.haskell.lib.justStaticExecutables;
-          hspkgs = prev.haskell.packages.${compiler}.override haskellOverrides;
+          hspkgs = prev.haskell.packages.${compiler}.extend haskellExtend;
           hls = prev.haskell-language-server.override {
             supportedGhcVersions = [ "962" ];
           };
           nixGL = import nixGLSrc { pkgs = prev; };
         in {
+          haskellExtend = haskellExtend;
           hspkgs = hspkgs;
           haskell-language-server = hls;
           hlint = mk-exe hspkgs.hlint;
@@ -191,8 +224,11 @@
           cabal-install = prev.haskell.packages.${compiler}.cabal-install;
           # cabal-plan = mk-exe hspkgs.cabal-plan;
 
-          hspkgsMusl = prev.pkgsMusl.haskell.packages.${compiler}.override
-            haskellOverrides;
+          cabal-multi-repl =
+            mk-exe (hspkgs.extend multiCabalExtend).cabal-install;
+
+          hspkgsMusl =
+            prev.pkgsMusl.haskell.packages.${compiler}.extend haskellExtend;
 
           roboto_font =
             "${prev.roboto}/share/fonts/truetype/Roboto-Regular.ttf";
@@ -243,7 +279,6 @@
         p.dhall
         p.turtle
         p.insert-ordered-containers
-        p.proto3-suite
         p.json-syntax
         p.cgroup-rts-threads
         p.prometheus-client
@@ -262,7 +297,7 @@
         # ghc-static
         # pkgs.nixGLIntel
         pkgs.weeder
-        pkgs.cabal-install
+        pkgs.cabal-multi-repl
         # pkgs.cabal-plan
         # pkgs.ormolu
         pkgs.fourmolu
@@ -314,7 +349,7 @@
       devShell.x86_64-linux = pkgs.mkShell { buildInputs = all-pkgs; };
 
       devShells.x86_64-linux.test = pkgs.hspkgs.shellFor {
-        packages = p: [ p.proto3-suite ];
+        packages = p: [ p.gerrit ];
         buildInputs = [ pkgs.ghcid pkgs.cabal-install ];
       };
     };

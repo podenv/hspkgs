@@ -13,6 +13,7 @@ Packages:
 - calligraphy
 - apply-refact
 - kubernetes-client
+- cabal-multi-repl (just the next cabal release)
 
 Helpers:
 
