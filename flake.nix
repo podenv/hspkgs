@@ -85,6 +85,7 @@
             # relax bound for base
             zigzag = pkgs.haskell.lib.doJailbreak hpPrev.zigzag;
             bytebuild = pkgs.haskell.lib.doJailbreak hpPrev.bytebuild;
+            nixfmt = pkgs.haskell.lib.doJailbreak hpPrev.nixfmt;
 
             # data-diverse is presently marked as broken because the test don't pass.
             data-diverse = pkgs.haskell.lib.dontCheck
@@ -183,6 +184,9 @@
           calligraphy = mk-exe hspkgs.calligraphy;
           apply-refact = mk-exe hspkgs.apply-refact;
           tasty-discover = mk-exe hspkgs.tasty-discover;
+          nixfmt = mk-exe hspkgs.nixfmt;
+          cabal-fmt = mk-exe hspkgs.cabal-fmt;
+          doctest = mk-exe hspkgs.doctest;
           # replace the global cabal-install by the one provided by the right compiler set
           cabal-install = prev.haskell.packages.${compiler}.cabal-install;
           # cabal-plan = mk-exe hspkgs.cabal-plan;
