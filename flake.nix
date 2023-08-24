@@ -57,11 +57,18 @@
         rev = "f775857310e3af7e9ca508c735f1b9387ba56c01";
         sha256 = "sha256-2FYljBTk8C1YZOYMAGClrEniUN8naimhqohzRMEWGMQ=";
       };
+      # Pull fix for active unit: https://github.com/haskell/cabal/pull/9202
+      cabal-install-head = pkgs.fetchFromGitHub {
+        owner = "haskell";
+        repo = "cabal";
+        rev = "a3df3251efef3ed2cd3d7f5ed8b92641fd0b5504";
+        sha256 = "sha256-Y/SuDEt6Vn6z61MF2Kov7s4cVbtynGxjf9gD/lCewT8=";
+      };
 
       compiler = "ghc962";
       multiCabalExtend = hpFinal: hpPrev: {
         cabal-install = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "cabal-install" "${cabal-head}/cabal-install"
+          (hpPrev.callCabal2nix "cabal-install" "${cabal-install-head}/cabal-install"
             { });
         cabal-install-solver = pkgs.haskell.lib.dontCheck
           (hpPrev.callCabal2nix "cabal-install-solver"
