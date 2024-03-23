@@ -7,7 +7,7 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/e365e1db48d060b3e31b02ec8177f66f386f39b8";
+      "github:NixOS/nixpkgs/b79cc961fe98b158ea051ae3c71616872ffe8212";
   };
 
   outputs = { self, nixpkgs }:
@@ -16,8 +16,8 @@
       nixGLSrc = pkgs.fetchFromGitHub {
         owner = "guibou";
         repo = "nixGL";
-        rev = "489d6b095ab9d289fe11af0219a9ff00fe87c7c5";
-        sha256 = "sha256-E4zUPEUFyVWjVm45zICaHRpfGepfkE9Z2OECV9HXfA4=";
+        rev = "d709a8abcde5b01db76ca794280745a43c8662be";
+        sha256 = "sha256-E4zUPEUFyVWjVm45zICaHRpfGepfkE9Z2OECV9HXfA5=";
       };
 
       # Pull master for ghc-9.6 compat
@@ -38,8 +38,8 @@
       servant-effectful = pkgs.fetchFromGitHub {
         owner = "Kleidukos";
         repo = "servant-effectful";
-        rev = "21b5a1d7cb209f3b4594167bb0b5a8d632c8a8e1";
-        sha256 = "sha256-UUNymCKASnpi6fh26Y5GQD3ufjkY7vbVqWwh76GcnU4=";
+        rev = "cec4d5483ef461bc27c8a9a707ce7b7e4e14d110";
+        sha256 = "sha256-UUNymCKASnpi6fh26Y5GQD3ufjkY7vbVqWwh75GcnU4=";
       };
 
       # https://github.com/ndmitchell/record-dot-preprocessor/pull/59
@@ -48,49 +48,6 @@
         repo = "large-records";
         rev = "5bcb0eb844f5b5affdd102ebcf3e34e45ac96ed8";
         sha256 = "sha256-W6Xh6aVOsx9rgM6IVin6w7Z3e9yUESSaxfejkyU0ekY=";
-      };
-
-      # Pull cabal master for https://github.com/haskell/cabal/pull/8726 available through the pkgs.cabal-multi-repl package
-      cabal-head = pkgs.fetchFromGitHub {
-        owner = "haskell";
-        repo = "cabal";
-        rev = "f775857310e3af7e9ca508c735f1b9387ba56c01";
-        sha256 = "sha256-2FYljBTk8C1YZOYMAGClrEniUN8naimhqohzRMEWGMQ=";
-      };
-      # Pull fix for active unit: https://github.com/haskell/cabal/pull/9202
-      cabal-install-head = pkgs.fetchFromGitHub {
-        owner = "haskell";
-        repo = "cabal";
-        rev = "a3df3251efef3ed2cd3d7f5ed8b92641fd0b5504";
-        sha256 = "sha256-Y/SuDEt6Vn6z61MF2Kov7s4cVbtynGxjf9gD/lCewT8=";
-      };
-
-      compiler = "ghc962";
-      multiCabalExtend = hpFinal: hpPrev: {
-        cabal-install = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "cabal-install" "${cabal-install-head}/cabal-install"
-            { });
-        cabal-install-solver = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "cabal-install-solver"
-            "${cabal-head}/cabal-install-solver" { });
-        Cabal-described = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "Cabal-described"
-            "${cabal-head}/Cabal-described" { });
-        Cabal-QuickCheck = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "Cabal-QuickCheck"
-            "${cabal-head}/Cabal-QuickCheck" { });
-        Cabal-tree-diff = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "Cabal-tree-diff"
-            "${cabal-head}/Cabal-tree-diff" { });
-        Cabal-syntax = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "Cabal-syntax" "${cabal-head}/Cabal-syntax"
-            { });
-        Cabal = pkgs.haskell.lib.dontCheck
-          (hpPrev.callCabal2nix "Cabal" "${cabal-head}/Cabal" { });
-        semaphore-compat = pkgs.haskell.lib.dontCheck
-          (pkgs.haskell.lib.overrideCabal hpPrev.semaphore-compat {
-            broken = false;
-          });
       };
 
       haskellExtend = hpFinal: hpPrev:
@@ -110,8 +67,6 @@
               sha256 = "sha256-g+nMToAq1J8756Yres6xKraQq3QU3FcMjyLvaqVnrKc=";
             };
           in hpPrev.callCabal2nix "gerrit" src { };
-
-          hlint = hpPrev.hlint_3_6_1;
 
           # lucid-svg needs https://github.com/jeffreyrosenbluth/lucid-svg/pull/17
           lucid-svg = pkgs.haskell.lib.doJailbreak hpPrev.lucid-svg;
@@ -134,38 +89,14 @@
               broken = false;
             });
 
-          # https://github.com/ndmitchell/record-dot-preprocessor/pull/59
-          record-dot-preprocessor = let
-            src = pkgs.fetchFromGitHub {
-              owner = "TristanCacqueray";
-              repo = "record-dot-preprocessor";
-              rev = "b33a0a443d746d7a1745b1c5f50e0ccfb686cf71";
-              sha256 = "sha256-EkSuUjYoUO2WTBseO981VrYZTuuFls2Q+bxovtgq5WI=";
-            };
-          in hpPrev.callCabal2nix "record-dot-processor" src { };
-
-          large-generics = mk-large-rec "large-generics";
-          large-records = mk-large-rec "large-records";
-
           # https://github.com/fakedata-haskell/fakedata/issues/51
           fakedata = pkgs.haskell.lib.dontCheck hpPrev.fakedata;
-
-          # prometheus-client needs latest version
-          prometheus-client =
-            pkgs.haskell.lib.overrideCabal hpPrev.prometheus-client {
-              version = "1.1.1";
-              sha256 = "sha256-anCex0llHYbh46EYkZPT1qdEier48QKXwxzIY/xGRMg=";
-              revision = null;
-              editedCabalFile = null;
-            };
 
           # json-syntax test needs old tasty
           json-syntax = pkgs.haskell.lib.doJailbreak (pkgs.haskell.lib.dontCheck
             (pkgs.haskell.lib.overrideCabal hpPrev.json-syntax {
               broken = false;
             }));
-
-          fourmolu = hpPrev.fourmolu_0_13_1_0;
 
           xstatic = mk-xstatic-lib "xstatic";
           xstatic-th = mk-xstatic-lib "xstatic-th";
@@ -205,12 +136,15 @@
               "${kubernetes-client}/kubernetes-client" { });
         };
 
+      compilerVersion = "964";
+      compiler = "ghc${compilerVersion}";
+
       overlay = final: prev:
         let
           mk-exe = prev.haskell.lib.justStaticExecutables;
           hspkgs = prev.haskell.packages.${compiler}.extend haskellExtend;
           hls = prev.haskell-language-server.override {
-            supportedGhcVersions = [ "962" ];
+            supportedGhcVersions = [ compilerVersion ];
           };
           nixGL = import nixGLSrc { pkgs = prev; };
         in {
@@ -221,6 +155,8 @@
           weeder = mk-exe hspkgs.weeder;
           ormolu = mk-exe hspkgs.ormolu;
           fourmolu = mk-exe hspkgs.fourmolu;
+          eventlog2html = mk-exe hspkgs.eventlog2html;
+          profiteur = mk-exe hspkgs.profiteur;
           calligraphy = mk-exe hspkgs.calligraphy;
           apply-refact = mk-exe hspkgs.apply-refact;
           tasty-discover = mk-exe hspkgs.tasty-discover;
@@ -231,14 +167,12 @@
           cabal-install = prev.haskell.packages.${compiler}.cabal-install;
           # cabal-plan = mk-exe hspkgs.cabal-plan;
 
-          cabal-multi-repl =
-            mk-exe (hspkgs.extend multiCabalExtend).cabal-install;
-
           hspkgsMusl =
             prev.pkgsMusl.haskell.packages.${compiler}.extend haskellExtend;
 
           roboto_font =
             "${prev.roboto}/share/fonts/truetype/Roboto-Regular.ttf";
+          nixVulkanIntel = nixGL.nixVulkanIntel;
           nixGLIntel = nixGL.nixGLIntel;
           nixGL = nixGL;
         };
@@ -304,7 +238,6 @@
         # ghc-static
         # pkgs.nixGLIntel
         pkgs.weeder
-        pkgs.cabal-multi-repl
         # pkgs.cabal-plan
         # pkgs.ormolu
         pkgs.fourmolu

@@ -8,12 +8,11 @@ Feel free to add your own workarounds.
 
 Packages:
 
-- ghc-9.6.2
+- ghc-9.6.4
 - weeder
 - calligraphy
 - apply-refact
 - kubernetes-client
-- cabal-multi-repl (just the next cabal release)
 
 Helpers:
 
