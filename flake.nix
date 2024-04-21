@@ -17,7 +17,7 @@
         owner = "guibou";
         repo = "nixGL";
         rev = "d709a8abcde5b01db76ca794280745a43c8662be";
-        sha256 = "sha256-E4zUPEUFyVWjVm45zICaHRpfGepfkE9Z2OECV9HXfA5=";
+        sha256 = "sha256-V1o2bCZdeYKP/0zgVp4EN0KUjMItAMk6J7SvCXUI5IU=";
       };
 
       # Pull master for ghc-9.6 compat
