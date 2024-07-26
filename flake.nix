@@ -32,8 +32,8 @@
       xstatic = pkgs.fetchFromGitHub {
         owner = "TristanCacqueray";
         repo = "haskell-xstatic";
-        rev = "1f72fd2e220414c089492698425c47e7c9566159";
-        sha256 = "sha256-6IT8K9noUDIa6ZVjWE3ZrbsElthRCFzBxsCudvpkJ88=";
+        rev = "c3b43af72dc221b8120f7863ac83ebe2e12e5cda";
+        sha256 = "sha256-v8cazn10BGukJIH1JoWhs20bXFtlKO4P21ACZ+l9qqg=";
       };
       servant-effectful = pkgs.fetchFromGitHub {
         owner = "Kleidukos";
@@ -116,6 +116,9 @@
           xstatic-novnc = mk-xstatic-lib "xstatic-novnc";
           xstatic-winbox = mk-xstatic-lib "xstatic-winbox";
           xstatic-pcm-player = mk-xstatic-lib "xstatic-pcm-player";
+          xstatic-quill = mk-xstatic-lib "xstatic-quill";
+          xstatic-quill-cursors = mk-xstatic-lib "xstatic-quill-cursors";
+          xstatic-otjs = mk-xstatic-lib "xstatic-otjs";
 
           # extra effectful package
           servant-effectful =
