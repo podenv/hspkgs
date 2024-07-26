@@ -7,7 +7,7 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/b79cc961fe98b158ea051ae3c71616872ffe8212";
+      "github:NixOS/nixpkgs/574f1a6205e63e9870c6e6132c393f9082d58d2a";
   };
 
   outputs = { self, nixpkgs }:
@@ -139,7 +139,7 @@
               "${kubernetes-client}/kubernetes-client" { });
         };
 
-      compilerVersion = "964";
+      compilerVersion = "966";
       compiler = "ghc${compilerVersion}";
 
       overlay = final: prev:
@@ -165,7 +165,7 @@
           tasty-discover = mk-exe hspkgs.tasty-discover;
           nixfmt = mk-exe hspkgs.nixfmt;
           cabal-fmt = mk-exe hspkgs.cabal-fmt;
-          doctest = mk-exe hspkgs.doctest;
+          doctest = hspkgs.doctest;
           # replace the global cabal-install by the one provided by the right compiler set
           cabal-install = prev.haskell.packages.${compiler}.cabal-install;
           # cabal-plan = mk-exe hspkgs.cabal-plan;
