@@ -156,6 +156,7 @@
           haskell-language-server = hls;
           hlint = mk-exe hspkgs.hlint;
           weeder = mk-exe hspkgs.weeder;
+          cabal-gild = mk-exe hspkgs.cabal-gild;
           ormolu = mk-exe hspkgs.ormolu;
           fourmolu = mk-exe hspkgs.fourmolu;
           eventlog2html = mk-exe hspkgs.eventlog2html;
